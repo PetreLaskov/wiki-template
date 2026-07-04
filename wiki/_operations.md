@@ -1,371 +1,365 @@
 # Operations
 
-Extended playbooks for the Knowledge Compiler. Read on demand — `AGENTS.md` is
-the contract; this file is the manual. Sections are independent; jump in.
+Extended playbooks for the Knowledge Compiler. Read on demand — `AGENTS.md` is the
+contract; this file is the manual. Sections are independent; jump in.
 
 Contents:
-1. Ingest (extended)
-2. Query (extended)
-3. Synthesize
-4. Review
-5. Refactor — split, merge, move, rename
-6. Lifecycles — questions, contradictions, stubs
-7. Style — voice, rhythm, anti-patterns
-8. Quality heuristics — what makes a page good
-9. Index scaling — stages by wiki size
-10. Working with the user
-11. Conventions — filenames, dates, assets, citations
+1. Charter
+2. Ingest (extended)
+3. Batch ingest and `_state.md`
+4. Query (extended)
+5. Synthesize
+6. Review
+7. Refactor — split, merge, rename, hub-extract
+8. Lifecycles — questions, contradictions, seeds, theses
+9. Style — voice, rhythm, anti-patterns
+10. Quality heuristics — what makes a page good
+11. Scaling — index, catalog, log
+12. Working with the user
+13. Conventions — filenames, dates, assets, citations
 
 ---
 
-## 1. Ingest (extended)
+## 1. Charter
+
+Run at wiki birth, or whenever scope has shifted under the existing charter's feet.
+The charter lives as `## Charter` in `wiki/index.md`.
+
+1. Read whatever sources exist in `raw/` (or their opening sections, for large corpora).
+   The charter describes what the sources collectively imply, not what anyone intended.
+2. Draft the five parts (`AGENTS.md` § Charter): what it compiles; the 3-7 question
+   classes a future agent must answer well; source posture with reliability tiers; page
+   economics; what it is NOT.
+3. Ask the user **one focused exchange**: does this match what you want the wiki to be
+   able to do? Sharpen from the answer.
+4. Question classes should be concrete enough to test routing against. "Understand X" is
+   not a question class; "given a practitioner report, recommend which technique and
+   name the safety boundary" is.
+5. Log as `charter`. Revising an existing charter also updates the State of the Model
+   (the two must not contradict).
+
+The charter is the wiki's optimization target. Every later economics decision — what
+deserves a page, what gets a hub, what to synthesize — traces back to it.
+
+## 2. Ingest (extended)
 
 ### Single source
 
-1. Read the raw file fully. Note structure, density, source quality, biases.
-2. Identify key claims and the entities / concepts they touch.
-3. Decide page allocation:
-   - One source page (always — 1:1 with raw file).
-   - Plus updates to existing entity / concept pages.
-   - Plus new entity / concept pages where warranted (start as seed).
-4. Draft the source page from `_templates.md` § source.
-5. For each touched entity / concept page:
-   - **Existing**: integrate the new claim into the body. If the claim contradicts
-     an existing one, both pages get `confidence: contested` and a Related link.
-   - **New**: stub with frontmatter, opening, ≥1 key point, sources list.
-6. Update Related sections of all touched pages — links go both ways.
-7. Update `index.md`: add new pages under their domain, refresh shape paragraph if
-   the wiki's scope has shifted, prepend a Recent Activity entry.
-8. Append a single `log.md` entry summarizing the ingest.
-
-### Batch ingest
-
-Same procedure per source. Group all touched pages into one log entry per session.
-Defer minor cleanup (tag normalization, prose polish) to the next `review`.
+1. Read the raw file fully. Note structure, genre, reliability, biases.
+2. Extract the claims that bear on the charter's question classes. Number them S1…Sn.
+3. **Delta first.** For each claim, find its owner page:
+   - **Existing owner**: integrate the claim (cited `[[This Source]] S3`). If it
+     contradicts the page, mark both sides `confidence: contested`, link them, open a
+     `question` if the tension is live.
+   - **No owner and the claim is load-bearing for the charter**: create a seed —
+     frontmatter, thesis, `load_when`, ≥1 key point, ≥1 link.
+   - **No owner and it's peripheral**: leave it housed only in the source page's claim
+     list. Not every claim earns a concept.
+4. Write the source page (`_templates.md` § source): Snapshot, Reliability
+   (usable-for / not-usable-for), Key Claims with owner pointers, Model Delta, Audit.
+5. **Novelty budget.** If the Model Delta is "confirms existing pages, changes little",
+   the source page is ~150-300 words and you are done writing it. Spend the saved effort
+   on the owner pages. Never produce a long parallel summary of content the model
+   already holds.
+6. Update Related on touched pages (bidirectional), `index.md` (domain listing, Load
+   Next By Task if a new routing need appeared, Recent Activity), one `log.md` entry.
 
 ### Re-ingest
 
-Triggered when a `raw/` file's mtime advances past its source page's `updated:`.
+Triggered when lint flags `src_bytes` drift, or when you know the raw file changed.
 
-1. Diff the new source content against the existing source page.
-2. Update the source page from the new content.
-3. Propagate deltas into entity / concept / thesis pages that draw on it.
-4. Where new claims contradict existing pages, mark both `confidence: contested`.
-5. Bump `updated:` on every touched page.
-6. Log as `ingest` with `(re-ingest)` tag in the subject.
+1. Diff new content against the source page's claims.
+2. Update the source page; propagate the delta to owner pages.
+3. New contradictions → `confidence: contested` on both sides.
+4. Bump `updated:` on touched pages; log as `ingest (re-ingest)`.
 
-### Asset handling
+## 3. Batch ingest and `_state.md`
 
-- Images and PDFs live in `raw/assets/`.
-- Reference from a wiki page using `![alt](../raw/assets/file.ext)` for inline
-  images, or `[[../raw/assets/file.pdf]]` for documents.
-- If an asset is essential to interpreting a source, mention it in the source
-  page's Key Claims.
+For >5 sources, improvised ingestion loses its place and its quality gates. Maintain
+`wiki/_state.md`:
 
----
+    # Ingestion State
 
-## 2. Query (extended)
+    [2-4 sentences: what's being ingested, in what order, why that order.]
+
+    ## Resume Point
+    [Exactly where the next session picks up: next file(s), wave number.]
+
+    ## Waves
+    - Wave 3 (next): [files]
+    - Wave 2 (done YYYY-MM-DD): [files] — gate: lint clean, hubs updated
+    - Wave 1 (done YYYY-MM-DD): [files] — gate: lint clean
+
+    ## Queue / Backlog
+    [Remaining files, priority-ordered. Note exclusions and why.]
+
+Protocol:
+
+- Order the queue by leverage, not alphabet: foundational / definitional sources first,
+  so later sources integrate into existing owners instead of creating parallel seeds.
+- Work in **waves of 5-10 sources**. After each wave: update the hubs the wave touched,
+  run `tools/lint.py`, fix invariant errors, one log entry for the wave.
+- Every ~3 waves or ~25 sources: full `review`. Batch ingestion without periodic review
+  is how a wiki silts up with unrouted source pages.
+- Conservative defaults while the user is away: update existing pages over creating new;
+  seeds over speculative elaboration; log questions over inventing answers; defer
+  refactors touching >5 pages.
+- `_state.md` is a system file: not indexed, not lint-counted, and kept **short** — it
+  is a resume point, not a project diary. History belongs in the log.
+
+## 4. Query (extended)
+
+### Routing budget
+
+Index → Load Next By Task → hub → owner pages. Read highest `importance` first; aim to
+answer from ≤ ~5 pages. If you needed more, either the routing layer failed (note it for
+review) or the question is genuinely synthetic (consider filing the answer).
 
 ### Scope detection
 
-The shape of the question dictates the shape of the answer (and where it gets filed):
-
-- **Definitional** ("What is X?") → entity or concept lookup; no new page unless
-  the query itself reveals a gap.
-- **Comparative** ("X vs Y?") → file as `analysis`.
-- **Open survey** ("What do we know about Y?") → file as `synthesis`.
-- **Predictive / argued** ("Should we believe Z?") → file as `thesis`.
-- **Unanswerable from current sources** → file as `question`.
+- **Definitional** ("What is X?") → owner-page lookup; no new page.
+- **Comparative / investigative** → file as `analysis`.
+- **Open survey** ("what do we know about Y?") → file as `synthesis`.
+- **Argued position** ("should we believe Z?") → file as `thesis`.
+- **Unanswerable from current sources** → file as `question`. Always.
 
 ### Citation discipline
 
-Every load-bearing claim in an answer must trace to a wiki page (and from there to
-a `raw/` file), or be marked `(unsupported)`. If you can't trace it, you can't
-claim it. Speculation is fine when labelled.
+Every load-bearing claim in an answer traces to a wiki page at claim-anchor level (and
+through it to raw), or is marked `(unsupported)`. State confidence explicitly. Name what
+the wiki does *not* know that bears on the answer — the gaps are information.
 
-### Filing the answer
+### Filing
 
-If the answer is reusable — likely to be asked again, or sets up future questions —
-file it as a wiki page. The conversational answer points to it. Subsequent queries
-hit the page first.
+File when the question is likely to recur, when assembly took >3 page reads, or when the
+answer surfaced a gap or tension. The conversational answer then points at the page.
+Trivial lookups leave no page — but a routing failure still gets a note for review.
 
----
-
-## 3. Synthesize
+## 5. Synthesize
 
 When to synthesize:
 
-- A domain has accumulated ≥5 substantive pages without a `synthesis`.
-- A query keeps recurring; the answer is now reusable.
-- A `thesis` crystallizes from accumulating evidence — the moment the through-line
-  becomes visible.
-- A `review` surfaces a domain whose pages are well-formed individually but lack a
-  map.
+- A domain has ≥5 substantive pages and no `synthesis` (review flags this as debt).
+- A query keeps recurring; the answer deserves a page.
+- A through-line has become visible across accumulating evidence — the moment to write
+  a `thesis`.
+- A domain's pages are individually fine but the territory has no map.
 
 Procedure:
 
-1. Pull all relevant pages (filter index by domain or tag).
-2. Distill the through-line — the single argument or pattern that organizes them.
-3. Write the synthesis page: thesis frontmatter, opening (1 paragraph, the
-   landscape), Key Points (sub-areas with their representative pages), Body
-   (the through-line argued in full), Open frontiers (questions the synthesis
-   surfaces).
-4. Update each touched page with a Related entry pointing to the new synthesis.
-5. Index it under its primary domain. If it covers two domains, list under primary
-   only and note in the secondary domain header.
+1. Pull the in-scope pages (by domain, hub, or explicit list).
+2. Distill the through-line — the single argument or pattern that organizes them. If you
+   can't name it in a sentence, the synthesis isn't ready; say so and stop.
+3. Write from the scaffold: `synthesis` if it maps territory, `thesis` if it argues.
+4. Add Related entries on covered pages (bidirectional). If the synthesis now routes the
+   domain, give it a Decision Map and list it as the domain's hub in the index.
+5. Log it.
 
-A good synthesis tells you what the field looks like when seen as a whole. A bad
-synthesis just enumerates the pages.
+A good synthesis tells you what the field looks like seen whole. A bad one enumerates
+pages. If you're listing without distilling, stop and revisit step 2.
 
----
+## 6. Review
 
-## 4. Review
+Periodic consolidation. Cadence: every ~25 ingests, after each large batch phase, or
+whenever the wiki feels off (a legitimate trigger).
 
-Periodic consolidation. Cadence: every ~25 ingests, or on user request, or
-whenever the wiki "feels off" (a perfectly legitimate trigger).
+1. **Run `tools/lint.py`.** Fix invariant errors first — they are never acceptable
+   standing state. Then work the diagnostics as a **disposal queue**: every item gets an
+   action or a one-line logged reason to defer. No silent skips.
+   - Orphans → link from a relevant page, merge, or justify isolation.
+   - `importance ≥ 7 ∧ status: seed` → develop to `live` or demote importance.
+   - Broken links → create the seed or remove the link.
+   - Oversized pages → hub-extract (§ 7).
+   - Stale pages / `src_bytes` drift → refresh, re-ingest, or mark.
+   - Domain swelling → synthesis + catalog migration (§ 11).
+2. **Semantic pass** — what the script can't see. Sample recent and high-importance
+   pages for: topic-label theses; `confidence` unbacked by the citations actually on the
+   page; contested pairs where one side quietly vanished; Key Points that summarize the
+   body instead of being its spine; hub openings and the index that have stopped being
+   decision surfaces (routing bloat); register drift in voice.
+3. **Synthesis debt**: domains with ≥5 substantive pages and no synthesis; concept
+   clusters cited by ≥5 sources with no thesis. Write or log why not.
+4. **Question backlog**: promote (an answer now exists → analysis/thesis), retire (no
+   longer interesting — say why), or re-frame (the question sharpened).
+5. **Rewrite the State of the Model** in `index.md`. Not "update" — rewrite from what
+   the wiki now holds: through-line, strongest claims, live tensions, maturity, next
+   leverage. If nothing changed since last review, either no compilation happened or the
+   section wasn't honest.
+6. **Rotate the log** past ~200 entries: older entries → `wiki/_log-archive-YYYY.md`,
+   newest ~50 stay.
+7. One `review` log entry: counts and dispositions ("5 orphans linked, 2 seeds
+   developed, 1 hub extracted, model rewritten; deferred X because Y").
 
-Checklist (work the diagnostics from AGENTS.md § Lint):
+## 7. Refactor — split, merge, rename, hub-extract
 
-1. **Orphans.** List pages with no inbound links. For each: link if relevant,
-   archive if obsolete (`status: evergreen` plus a note), merge if redundant, or accept
-   isolation if genuinely standalone (rare).
-2. **High-importance stubs.** `importance ≥ 7 ∧ status = seed`. Either promote to
-   working by adding key points and ≥1 cross-link, or downgrade importance.
-3. **Tag hygiene.** Tally tag frequencies. Collapse near-synonyms. Retire
-   singletons that don't pull weight. If a tag appears on >40% of pages, it's
-   probably a domain in disguise — promote it.
-4. **Broken links.** `[[X]]` where X has no page or alias. Either create a stub or
-   remove the link (don't leave broken).
-5. **Domain swelling.** Any domain with >30 pages: extract a synthesis if missing,
-   then evaluate sub-index extraction (see § 9 Index scaling).
-6. **Stale pages.** `updated:` >90 days for pages touched by recent ingests
-   (contradicted, deprecated, or in need of review).
-7. **Contested-claim audit.** Pages with `confidence: contested` — verify the
-   disagreement is still live and both sides remain represented.
-8. **Question backlog.** `type: question` pages older than 30 days — promote to
-   `analysis`/`thesis` if resolvable, retire if no longer interesting, or
-   re-frame.
-9. **Index sanity.** Every wiki page (excl. `_*.md`) appears under exactly one
-   domain header. Recent Activity entries match log.
-10. **Shape paragraph drift.** Re-read `index.md`'s shape paragraph. Is it still
-    true? If the wiki has grown into a different shape, rewrite the paragraph.
+Always log with the old → new mapping. If a refactor would touch >5 pages and the user
+is away, log the intent and defer.
 
-Log a single `review` entry. List counts (e.g. "5 orphans linked, 2 stubs
-promoted, 1 tag retired, shape paragraph rewritten").
+### Hub-extract (pocketing)
 
----
+Trigger: a concept has swelled past ~2,000 words with separable concerns, or a cluster
+of pages needs routing that the index shouldn't carry.
 
-## 5. Refactor
-
-Three operations. Always log with old → new mapping.
+1. Identify the separable concerns. Each child gets its own thesis and `load_when` and
+   **owns** its claims.
+2. Create the children; move depth into them, cited at anchor level.
+3. Reduce the parent to a hub: compact opening, Key Points, **Decision Map**
+   (task → child → guardrail), Boundaries, Related naming what each child owns.
+4. Re-point inbound links that were really about a child's content.
+5. Update index (the hub becomes the domain's routing entry). Run lint.
 
 ### Split
 
-Trigger: a page conflates two distinct concepts, or grows past ~600 words with
-internal seams visible.
+Trigger: one page conflating two theses.
 
-1. Identify the seam. Each side should have its own thesis.
-2. Create the new page (or both new pages, if the original becomes a redirect).
-3. Move content over; tighten each side.
-4. The original either stays as a synthesis (if both halves are still related) or
-   gets deleted.
-5. Update all inbound links to point to the right side.
-6. Update `index.md`.
+1. Find the seam; each side gets its own thesis.
+2. Create pages, move content, tighten.
+3. Original becomes a hub (if the halves stay related) or is deleted.
+4. Re-point inbound links; update index.
 
 ### Merge
 
-Trigger: two pages on the same concept (commonly a stub + a richer page, or two
-parallel pages from different ingests).
+Trigger: two pages on one concept (stub + richer page, or parallel seeds from different
+ingest waves — batch ingestion produces these; review catches them).
 
-1. Choose the canonical title — the one that reads most naturally as `[[X]]` and
-   covers the broader scope.
-2. Merge bodies. Deduplicate. Resolve any conflicts in framing.
-3. Add the loser's title to the winner's `aliases:`.
-4. Update all inbound links (or rely on the alias for backward compatibility, but
-   prefer to fix the links so the graph is clean).
-5. Delete the loser. Update `index.md`.
+1. Choose the canonical title (reads naturally as `[[X]]`, broader scope).
+2. Merge bodies; deduplicate; resolve framing conflicts; keep the strongest citations.
+3. Loser's title → winner's `aliases:`. Fix inbound links anyway (clean graph beats
+   alias dependence). Delete the loser; update index.
 
 ### Move / Rename
 
-Trigger: domain reorganization, or a page's name no longer fits its content.
+1. Rename the file (filenames are titles). Old title → `aliases:`.
+2. Update inbound links and index. Retire the alias at a later review once links are
+   stable.
 
-1. Rename the file. Filenames are titles in this system.
-2. Add the old title to `aliases:` for transition.
-3. Update all inbound links to the new name.
-4. Update `index.md` (placement may change with rename).
-5. After ~30 days of stable links, the alias can be retired in a future review.
-
----
-
-## 6. Lifecycles
+## 8. Lifecycles
 
 ### Questions
 
-A `type: question` page is born when a query reveals a gap, or when an ingest
-raises a question the source doesn't answer.
-
-States:
-- **Open** (seed): the question stands.
-- **Partial** (working): some pages bear on it, but no resolution.
-- **Resolved** (evergreen): a `thesis` or `analysis` has answered it. The question page
-  links to its resolution and remains as a permanent record of the inquiry.
-
-Closed-but-not-deleted is the right move — the question's existence is itself
-information about the wiki's history.
+Born when a query can't be answered or an ingest surfaces a tension no source resolves.
+States: **Open** → **Partial** (some pages bear on it) → **Resolved** (a thesis/analysis
+answers it; the question page links to the resolution and remains as a record). Review
+disposes of the backlog every cycle: promote, retire, or re-frame.
 
 ### Contradictions
 
-When sources disagree, mark both pages `confidence: contested`. Add Related
-links between them. Both representations stand. The contestation often itself
-becomes a `thesis` (arguing one side) or a `question` (acknowledging the
-unresolved disagreement). Don't smooth contradictions away — they are the
-honest state of evidence.
+When sources disagree: both pages `confidence: contested`, linked in Related, and the
+disagreement stated on both — a reader of either page must learn the other side exists.
+The contestation itself often becomes a `thesis` (arguing a side) or a `question`
+(mapping the disagreement). Never smooth it away; disagreement is information.
 
-### Stubs
+### Seeds
 
-seed stubs are commitments to future content, not failures. A stub with thesis +
-≥1 key point + ≥1 link is doing useful work. A stub that lingers at seed with
-`importance ≥ 7` for >25 ingests is a red flag — promote or demote during the
-next review.
+A seed is a commitment, not a failure: thesis + `load_when` + ≥1 key point + ≥1 link is
+useful standing state. A seed with `importance ≥ 7` lingering across reviews is a red
+flag — develop it or demote it. There is no maturity ladder to climb; a page is `seed`
+until it's built, then it's `live`, and its epistemic weight is carried by `confidence`.
 
 ### Theses
 
-A `thesis` page is a position. It must be defensible. It must list what would
-change your mind (the page template includes this section). When a thesis is
-overturned by new evidence, don't delete it — restate it, lower its confidence,
-add the counter-evidence to its body, and (often) spawn a new thesis page for
-the revised position. The history of arguments is part of the wiki's value.
+A thesis must be defensible and must say what would change your mind. When new evidence
+overturns one: don't delete — restate, lower confidence, add the counter-evidence, and
+usually spawn the successor thesis. The history of arguments is part of the model.
 
----
-
-## 7. Style
+## 9. Style
 
 The wiki should read like one careful mind. Conventions:
 
-- **Voice**: declarative, precise, unhedged when evidence is strong, hedged
-  proportionally to confidence. Avoid hype, avoid throat-clearing.
-- **Sentence rhythm**: short topic sentences, longer evidence sentences. Vary.
-- **No "this article will…"**: pages don't refer to themselves as articles.
-- **No "in conclusion"**: the closing should be content, not meta.
-- **Use `[[links]]` inline**: don't ghettoize them in a "see also" footer.
-  Related is for highest-value cross-domain edges only.
-- **Numbers and names** trace to a source — inline citation or `sources:`
-  frontmatter.
-- **Compression discipline**: every sentence does work. Cut throat-clearing,
-  signposting, hedges that don't carry uncertainty information.
-- **Active voice when the actor matters**, passive when it doesn't.
-- **British or American spelling — pick one and hold to it.**
+- **Voice**: declarative, precise; unhedged when evidence is strong, hedged in
+  proportion to actual uncertainty. No hype, no throat-clearing.
+- **Compression discipline**: every sentence does work. Cut signposting and hedges that
+  carry no uncertainty information.
+- **No self-reference**: pages don't call themselves articles or conclude with
+  "in conclusion".
+- **Inline `[[links]]`**: woven into prose, not ghettoized in a footer. Related is for
+  the highest-value edges only.
+- **Numbers and names trace to a source** — anchor citation or `sources:`.
+- **Quoting**: blockquote, attributed, short. Paraphrase + cite beats long quotes.
+- **Spelling**: British or American — pick one and hold it.
+- If recent pages read in a different register than old ones, match the wiki, not your
+  session mood.
 
-The Knowledge Compiler's voice is the wiki's voice. Keep it consistent across
-sessions — if you find yourself writing in a different register, look at recent
-pages and match.
-
----
-
-## 8. Quality heuristics
+## 10. Quality heuristics
 
 A page is **good** when:
 
-- **Thesis predicts content.** A reader could reconstruct the page's shape from
-  its thesis frontmatter alone.
-- **Compression gradient holds.** Tight at frontmatter, dense in key points,
-  full in body. Each layer earns its expansion.
-- **≥1 cross-domain link.** The page is connected to the rest of the wiki, not
-  isolated in its own silo. (Pure singletons survive only with strong
-  justification.)
-- **Citations trace.** Every load-bearing claim is sourced.
-- **Status reflects reality.** A stub feels like a stub; a mature page feels
-  mature; an evergreen feels settled.
-- **Confidence is calibrated.** The label matches the actual evidence cited.
+- **Thesis predicts content** — a reader could reconstruct the page's shape from the
+  thesis alone.
+- **`load_when` names real tasks** — the page knows its own retrieval story.
+- **Compression gradient holds** — tight frontmatter, dense Key Points, full body.
+- **Claims are owned and anchored** — this page's claims live here and cite sources at
+  anchor level; borrowed claims cite their owner page.
+- **≥1 cross-domain link** — connected to the system, not siloed.
+- **Confidence is calibrated** — the label matches the evidence actually cited.
 
-A page is **weak** when (anti-patterns):
+A page is **weak** when:
 
-- Thesis is a topic label ("Things about X"), not a claim.
-- Key Points repeat the body in compressed form (redundant — they should *be*
-  the page's spine, not a summary of it).
-- Body buries the thesis under throat-clearing.
-- All links stay within one domain (siloed).
-- `confidence:` doesn't match the evidence on the page.
-- `mature` status with `sources: []` and no inbound links (claimed maturity, no
-  roots).
-- Fields are filled in mechanically — `tags: [topic]` where topic just
-  duplicates the domain.
+- Thesis is a topic label ("Things about X").
+- `load_when` is circular ("when the user asks about this page's topic" restated).
+- Key Points re-summarize the body instead of being its spine.
+- It restates claims another page owns (merge or cite instead).
+- All links stay in one domain.
+- A source page's Summary outweighs its Model Delta — compilation went into paraphrase
+  instead of integration.
+- `live` status with no inbound links and empty sources (claimed maturity, no roots).
 
-If a page review yields more weak markers than good ones, it's a refactor
-candidate.
+More weak markers than good ones → refactor candidate.
 
----
+## 11. Scaling — index, catalog, log
 
-## 9. Index scaling
+The index must stay a first-load router at every size. Two mechanisms:
 
-The index.md must remain skim-readable as the wiki grows. Stages by total wiki
-page count:
+- **Catalog extraction (~150+ pages).** Move exhaustive per-domain page listings to
+  `wiki/_catalog.md` (the register: every page, one line each, grouped by domain). The
+  index keeps: Charter, State of the Model, Load Next By Task, Open Questions, Recent
+  Activity, and per-domain entries listing **hubs + the top few pages** with a pointer
+  into the catalog. Every content page lives in the index or the catalog; lint checks
+  the union.
+- **Log rotation (~200+ entries).** Older entries → `wiki/_log-archive-YYYY.md`; newest
+  ~50 stay in `log.md`. Session start reads only the newest ~10.
 
-- **<50 pages.** Flat domain list. Recent Activity capped at 5-10. No
-  abstracts.
-- **50-200 pages.** Domain headers gain a 1-sentence abstract. Recent Activity
-  capped at 10. Open Questions surfaced (top 5).
-- **200-500 pages.** Each domain has an extracted `synthesis` page that maps it.
-  Index header lists the synthesis. The synthesis lists the pages. Index
-  becomes a navigation surface, not a content listing.
-- **500-1500 pages.** Per-domain index files: `index-{domain}.md`. Main `index.md`
-  lists domain syntheses, Recent Activity, Open Questions, and a one-line
-  pointer to each `index-{domain}.md`.
-- **>1500 pages.** Same as above plus tag-based and time-based pivot views as
-  separate `_index-by-tag.md`, `_index-recent.md` files. The main `index.md`
-  stays the central routing surface.
+What must survive at any scale: the State of the Model stays ≤300 words, the Load Next
+By Task table stays one screen, and a session's first-read budget (`AGENTS.md` § First
+Read) stays fixed. Growth is absorbed by hubs and the catalog, never by a longer
+mandatory first read.
 
-Always preserve, at every scale: shape paragraph, Recent Activity, Open
-Questions.
+## 12. Working with the user
 
----
+**Ambiguity protocol.** If a request could mean two reasonable things, name the mode
+you'd run and ask one focused question. Not three.
 
-## 10. Working with the user
+**Surfacing state.** If the wiki's state contradicts the request (source already
+ingested, domain doesn't exist, charter missing), surface that in one sentence before
+proceeding.
 
-**Ambiguity protocol.** If the user's request could mean two reasonable things,
-name the mode you'd run and ask one focused question. Don't ask three. Don't
-silently pick the wrong interpretation.
+**Scope discipline.** Do what was asked. Adjacent problems you notice go into the log
+or a question page for the next review — not into this turn's diff.
 
-**Batch protocol.** If the user is unavailable (autonomous batch), default to
-conservative choices:
+**Autonomous batch.** Follow § 3's conservative defaults; leave `_state.md` accurate
+enough that any future session (or a different agent) resumes cold.
 
-- Prefer updating existing pages over creating new ones.
-- Prefer seed stubs over speculative elaboration.
-- Prefer logging open questions over inventing answers.
-- Defer refactors that affect >5 pages until a user is available.
+## 13. Conventions
 
-**Surfacing state.** If the wiki is in a state that contradicts the user's
-request — they asked to ingest a source whose source page already exists, or
-they asked about a domain that doesn't exist — surface that *before* proceeding,
-in one sentence.
+**Filenames.** Title Case With Spaces, `.md`. The filename is the link target
+(`[[Knowledge Compiler]]`); `aliases:` handles alternates. Raw files keep whatever name
+they arrived with — fidelity beats tidiness in `raw/`; the source *page* gets a readable
+title and records the raw path in `sources:`.
 
-**Scope discipline.** Do exactly what was asked. Don't pile on adjacent work
-("I noticed three other things to fix…") — log those for the next review
-instead.
+**Dates.** ISO 8601 (`YYYY-MM-DD`). Bump `updated:` on meaningful revision only.
 
----
+**Frontmatter lists.** Inline YAML: `domain: [a, b]`. Keep short.
 
-## 11. Conventions
+**Encoding.** UTF-8 everywhere. Windows tooling introduces mojibake (UTF-8 bytes
+re-read as CP1252: A-tilde/a-circumflex chains, corrupted emoji); lint flags it — fix
+at the source, don't propagate.
 
-**Filenames.** Title Case With Spaces, `.md` extension. `Knowledge Compiler.md`
-not `knowledge-compiler.md`. The filename is the link target (`[[Knowledge
-Compiler]]`). Aliases handle alternate phrasings.
+**System files.** `wiki/_*.md`: templates, operations, state, catalog, log archives,
+shape experiments. Never content. Not indexed, not lint-counted.
 
-**Dates.** ISO 8601, `YYYY-MM-DD`. Set `updated:` on every meaningful revision
-(content change, not whitespace).
+**Citations in prose.** `[[Source Page]]` (with `S#` anchors), never `raw/` paths —
+the source page is the abstraction other pages depend on. Direct `raw/` references
+appear only inside source pages and asset embeds.
 
-**Lists in frontmatter.** YAML inline form: `domain: [primary, secondary]`,
-`tags: [tag-1, tag-2]`. Keep lists short — if `tags:` has >5 entries, you're
-probably tagging too freely.
-
-**System files.** Anything in `wiki/` named `_*.md` is a system file. Not
-indexed. Not lint-counted as a wiki page. Used for templates, operations,
-extracted indexes (`_index-by-tag.md` etc.).
-
-**Citations in prose.** Use `[[Source Page]]` to refer to the source page
-(not the raw file directly). The source page abstracts the raw file; that
-abstraction is what other pages should depend on. Direct references to
-`raw/` files only inside source pages or for asset embeds.
-
-**Quoting.** Use blockquote (`>`) for direct quotation. Always attribute. Keep
-quotations short — paraphrase + cite is usually better than a long quote.
+**Assets.** `raw/assets/`, referenced `![alt](../raw/assets/file.ext)`. If an asset is
+essential to a source's interpretation, say so in the source page's Key Claims.

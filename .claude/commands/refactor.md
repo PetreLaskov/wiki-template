@@ -1,52 +1,42 @@
 ---
-description: Split, merge, rename, or move pages; reorganize a domain
+description: Split, merge, rename, or hub-extract pages; reorganize a domain
 argument-hint: <target page or domain, and the desired operation>
 ---
 
 Run the **refactor** mode for: $ARGUMENTS
 
-Procedure (canonical: `wiki/_operations.md` § 5):
+Identify the operation — **hub-extract**, **split**, **merge**, or **move/rename** —
+then follow `wiki/_operations.md` § 7:
 
-Identify the operation — **split**, **merge**, or **move/rename** — then:
+### Hub-extract (pocketing)
+A concept past ~2,000 words with separable concerns, or a cluster needing routing.
+
+1. Each separable concern becomes a child page with its own thesis + `load_when`,
+   **owning** its claims.
+2. Move depth into the children (anchor citations intact).
+3. Reduce the parent to a hub: compact opening, Key Points, **Decision Map**
+   (task → child → guardrail), Boundaries, Related naming what each child owns.
+4. Re-point inbound links that were about a child's content; update the index (the hub
+   becomes the domain's routing entry).
 
 ### Split
-A page conflating two distinct concepts, or grown past ~600 words with internal
-seams.
-
-1. Identify the seam. Each side should have its own thesis.
-2. Create the new page(s).
-3. Move content over; tighten each side.
-4. Original either becomes a synthesis (if both halves are still related) or is
-   deleted.
-5. Update every inbound link to point to the right side.
-6. Update `wiki/index.md`.
+One page conflating two theses → find the seam, create both pages, original becomes a
+hub or is deleted, re-point inbound links, update index.
 
 ### Merge
-Two pages on the same concept (commonly stub + richer page, or parallel pages
-from different ingests).
-
-1. Choose the canonical title — reads naturally as `[[X]]`, covers the broader
-   scope.
-2. Merge bodies. Deduplicate. Resolve framing conflicts.
-3. Add the loser's title to the winner's `aliases:`.
-4. Update inbound links to the new canonical name (don't rely solely on the
-   alias — fix the graph).
-5. Delete the loser. Update `wiki/index.md`.
+Two pages on one concept → choose the canonical title, merge bodies keeping the
+strongest citations, loser's title into winner's `aliases:`, fix inbound links anyway,
+delete the loser, update index.
 
 ### Move / Rename
-Domain reorganization, or a page's name no longer fits its content.
-
-1. Rename the file. Filenames are titles in this system.
-2. Add the old title to `aliases:` for transition.
-3. Update every inbound link to the new name.
-4. Update `wiki/index.md` (placement may change).
+Rename the file (filenames are titles), old title into `aliases:`, update inbound links
+and index; retire the alias at a later review.
 
 ### After every refactor
 
-- Run `lint` mentally: links resolve, every page in index, no orphans created.
-- Append a `wiki/log.md` entry with the old → new mapping, e.g.
-  `[[Old Page]] → split into [[New A]] + [[New B]]`.
+- Run `python tools/lint.py` — links resolve, registration intact, no orphans created.
+- Append a `wiki/log.md` entry with the old → new mapping
+  (`[[Old]] → hub + [[Child A]] + [[Child B]]`).
 
-If the refactor would touch >5 pages and the user is unavailable, log the
-intent and surface for the next interactive session — large refactors deserve
-a confirmation step.
+If the refactor would touch >5 pages and the user is unavailable, log the intent and
+surface it next interactive session — large refactors deserve a confirmation step.

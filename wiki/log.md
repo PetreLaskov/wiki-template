@@ -1,20 +1,19 @@
 # Log
 
-Append-only record of every operation on the wiki. Newest entry at the top.
+Append-only record of operations, newest at top. One entry per session-bounded
+operation (a batch wave is one entry, not ten). Rotated at review past ~200 entries
+(older → `_log-archive-YYYY.md`).
 
 Entry shape:
 
     ## [YYYY-MM-DD] op | Subject
-    Summary of what changed. Pages touched: [[P1]], [[P2]].
+    What changed in the model. Pages touched: [[P1]], [[P2]].
 
-`op` ∈ { `init`, `ingest`, `query`, `synthesize`, `lint`, `review`, `refactor` }.
-One entry per session-bounded operation — a batch ingest of 10 sources is one
-entry, not ten.
+`op` ∈ { init, charter, ingest, query, synthesize, lint, review, refactor }.
 
 ---
 
-## [2026-04-28] init | Knowledge Compiler initialized
-Wiki created with empty structure. Directories: `raw/`, `raw/assets/`, `wiki/`.
-Schema installed as `CLAUDE.md` (mirrored to `AGENTS.md`). System files
-(`wiki/_operations.md`, `wiki/_templates.md`) installed. Index, log, and human
-README initialized. Ready for first source ingest.
+## [2026-07-04] init | Knowledge Compiler v2 initialized
+Empty wiki on the v2 contract: charter-first, delta-first ingest, ledger source pages
+with claim anchors, `load_when` routing, hub/ownership conventions, `tools/lint.py`
+verification. Awaiting charter, then first source.

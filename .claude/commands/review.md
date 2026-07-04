@@ -1,38 +1,31 @@
 ---
-description: Periodic consolidation pass — orphans, stubs, link rot, structural debt
+description: Consolidation pass — work the lint diagnostics, pay synthesis debt, rewrite the model
 ---
 
-Run the **review** mode. This is a consolidation pass; do the work, log the
-result.
+Run the **review** mode. This is a consolidation pass: do the work, log the result.
 
-Procedure (canonical: `wiki/_operations.md` § 4):
+Procedure (canonical: `AGENTS.md` § Review; extended: `wiki/_operations.md` § 6):
 
-1. **Orphans.** Pages with no inbound links. For each: link from a relevant
-   page if it fits, merge if redundant, archive (`status: evergreen` + note) if
-   obsolete, accept isolation only with strong justification.
-2. **High-importance stubs.** `importance ≥ 7 ∧ status = seed`. Promote to working
-   by adding key points and ≥1 cross-link, or downgrade `importance` if the
-   page isn't actually important.
-3. **Tag hygiene.** Tally tag frequencies. Collapse near-synonyms. Retire
-   singletons that don't pull weight. Promote any tag covering >40% of
-   pages (it's a domain in disguise).
-4. **Broken links.** `[[X]]` where X has no page or alias. Either create
-   a stub or remove the link. Don't leave broken.
-5. **Domain swelling.** Any domain >30 pages: extract a synthesis if missing;
-   evaluate sub-index extraction (`wiki/_operations.md` § 9).
-6. **Stale pages.** `updated:` >90 days for pages contradicted or deprecated
-   by recent ingests. Refresh or mark.
-7. **Contested-claim audit.** Pages with `confidence: contested` — verify
-   the disagreement is still live and both sides remain represented.
-8. **Question backlog.** `type: question` pages older than 30 days — promote,
-   retire, or re-frame.
-9. **Index sanity.** Every wiki page (excl. `_*.md`) appears under exactly
-   one domain header.
-10. **Shape paragraph.** Re-read the index's shape paragraph. If the wiki has
-    grown into a different shape, rewrite it.
+1. **Run `python tools/lint.py`.** Fix invariant errors first. Then work the
+   diagnostics as a **disposal queue** — every item gets an action or a one-line logged
+   reason to defer. No silent skips:
+   - orphans → link, merge, or justify isolation;
+   - `importance ≥ 7 ∧ status: seed` → develop to `live` or demote;
+   - broken links → create the seed or remove;
+   - oversized pages → hub-extract (`wiki/_operations.md` § 7);
+   - stale pages / `src_bytes` drift → refresh, re-ingest, or mark;
+   - domain swelling → synthesis + catalog migration.
+2. **Semantic pass** on recent + high-importance pages: topic-label theses, uncalibrated
+   confidence, vanished contradiction sides, Key Points that aren't the spine, routing
+   bloat in index/hub openings, register drift.
+3. **Synthesis debt**: any domain with ≥5 substantive pages and no synthesis, any
+   concept cluster cited by ≥5 sources with no thesis — write it or log why not.
+4. **Question backlog**: promote, retire (say why), or re-frame.
+5. **Rewrite the State of the Model** in `wiki/index.md` from what the wiki now holds —
+   through-line, strongest claims, live tensions, maturity, next leverage. ≤300 words.
+6. **Rotate the log** if past ~200 entries (older → `wiki/_log-archive-YYYY.md`,
+   newest ~50 stay).
+7. One `review` log entry: counts and dispositions, including deferrals with reasons.
 
-Log a single `review` entry summarizing counts and actions
-("5 orphans linked, 2 stubs promoted, 1 tag retired, shape paragraph
-rewritten"). If a finding is too large for this pass — e.g. a domain that
-needs a real refactor — note it in the log and surface it for the next
-session.
+If a finding is too large for this pass (a domain needing real refactoring), log it and
+surface it for the next session rather than doing it badly now.

@@ -1,38 +1,28 @@
 ---
-description: Verify wiki invariants; report violations
+description: Run the mechanical lint script, then judgment checks; report violations
 ---
 
-Run the **lint** mode. Verify each invariant from `AGENTS.md` § Lint and
-report violations. Do not auto-fix — surface findings for the user to direct
-into a `review` or `refactor`.
+Run the **lint** mode.
 
-Invariants to check (system files `_*.md` excluded throughout):
+1. **Run the script**: `python tools/lint.py` from the repo root (Windows:
+   `tools\lint.cmd`). It checks the mechanical invariants — frontmatter schema and
+   vocabulary, `[[link]]` and claim-anchor resolution, raw↔source coverage, index/catalog
+   registration, encoding sanity (mojibake), date sanity — and emits diagnostics
+   (orphans, high-importance seeds, oversized pages, stale pages, domain swelling,
+   log length, `src_bytes` drift). Do not re-count by hand what the script counts.
 
-1. **Link resolution.** Every `[[link]]` resolves to an existing page or to a
-   page's `aliases:`. List broken links as `target ← page-with-link`.
-2. **Source coverage.** Every file in `raw/` (excluding `raw/assets/`) has
-   exactly one source page in `wiki/`. List orphan raw files (no source page)
-   and duplicate source pages (>1 page citing the same raw file).
-3. **Index coverage.** Every page in `wiki/` (excl. `_*.md`) appears in
-   `wiki/index.md`. List pages not in the index.
-4. **Source attribution.** Every non-source page has ≥1 entry in `sources:`,
-   or `sources: []` with an explicit "pure synthesis" note in the body. List
-   pages failing this.
-5. **Temporal sanity.** No page's `updated:` predates its raw source's mtime.
-   List pages older than their sources.
-6. **Contradiction marking.** Pages making contradictory claims should both
-   carry `confidence: contested` and reference each other in Related. List
-   pages with `contested` that lack the cross-reference, and any obvious
-   contradictions not yet marked.
+2. **Judgment layer** — sample recent and high-importance pages for what the script
+   cannot see:
+   - theses that are topic labels, not claims;
+   - `load_when` lines that are circular or missing a real task shape;
+   - `confidence` unbacked by the citations actually on the page;
+   - smoothed contradictions; laundered rhetoric or consensus tone;
+   - Key Points that summarize the body instead of being its spine;
+   - routing bloat: index or hub openings that stopped being decision surfaces.
 
-Then list **diagnostics** (not invariants — surface only):
+3. Output a structured report: **invariant errors** (never acceptable standing state),
+   then **diagnostics** (surface, don't auto-fix). Route findings into `review` or
+   `refactor` — lint itself fixes nothing.
 
-- Orphan pages (no inbound links).
-- `importance ≥ 7 ∧ status = seed`.
-- Tag singletons and over-represented tags.
-- `[[…]]` to nonexistent pages.
-- Domains exceeding ~30 pages.
-
-Output: a structured report. No log entry for `lint` unless the run reveals
-violations that demand follow-up; in that case, log the count and the suggested
-next mode (`review` or `refactor`).
+Log an entry only if the run reveals violations demanding follow-up; note the suggested
+next mode.

@@ -1,27 +1,23 @@
 ---
-description: Answer a question from the wiki, with citations; file the answer if reusable
+description: Answer a question from the wiki, with anchored citations; leave a trace
 argument-hint: <question>
 ---
 
 Run the **query** mode to answer: $ARGUMENTS
 
-Procedure (canonical: `AGENTS.md` § Query; extended: `wiki/_operations.md` § 2):
+Procedure (canonical: `AGENTS.md` § Query; extended: `wiki/_operations.md` § 4):
 
-1. Read `wiki/index.md`. Filter by domain or tag if scope is implied.
-2. Scan the relevant pages' theses. Read the highest-importance pages first.
-3. If the wiki's pages don't carry the load, read the relevant `raw/` files.
-4. Synthesize the answer with inline `[[citations]]`. Every load-bearing claim
-   must trace to a source page (and from there to a raw file). If a claim
-   can't be traced, mark it `(unsupported)` or omit it.
-5. **File the answer if reusable.** Detect:
-   - **Definitional / single-page lookup** → no new page; the answer points
-     into existing pages.
-   - **Comparative or investigative** → file as `analysis`.
-   - **Open survey** → file as `synthesis`.
-   - **Argued position** → file as `thesis`.
-   - **Unanswerable from current sources** → file as `question`.
-   Use the relevant scaffold from `wiki/_templates.md`.
-6. Append a `wiki/log.md` entry.
+1. Route: `wiki/index.md` → Load Next By Task → hub → owner pages. Read highest
+   `importance` first. Budget: answer from ≤ ~5 pages; descend to `raw/` only when the
+   pages don't carry the load.
+2. Synthesize the answer with **claim-anchor citations** (`[[Source Page]] S#`), explicit
+   confidence, and what the wiki does *not* know that bears on the answer. A claim that
+   can't be traced is marked `(unsupported)` or omitted.
+3. **Leave a trace**:
+   - recurring question, or assembly took >3 page reads → file as `analysis`
+     (`thesis` if argued, `synthesis` if a survey);
+   - unanswerable from current sources → file a `question` page — always;
+   - trivial lookup → no page, but note any routing failure for the next review.
+4. Append a `wiki/log.md` entry.
 
-Surface the answer in the conversation, then mention what (if anything) was
-filed for future reference.
+Surface the answer in conversation, then say what (if anything) was filed.

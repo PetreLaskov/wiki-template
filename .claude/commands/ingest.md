@@ -1,29 +1,34 @@
 ---
-description: Ingest one or more raw sources into the wiki
+description: Ingest raw source(s) — propagate the model delta, then write the ledger
 argument-hint: [path or description; empty = all new sources in raw/]
 ---
 
 Run the **ingest** mode for: $ARGUMENTS
 
-If no argument is given, list every file in `raw/` (excluding `raw/assets/`)
-that does not yet have a corresponding source page in `wiki/`, then ingest them
-in order — oldest mtime first.
+If no argument: list files in `raw/` (excluding `raw/assets/`) without a source page;
+if >5, switch to the batch protocol (`wiki/_operations.md` § 3) and maintain
+`wiki/_state.md`.
 
-Procedure (canonical: `AGENTS.md` § Ingest; extended: `wiki/_operations.md` § 1):
+If `wiki/index.md` has no `## Charter`, run charter mode first — do not compile blind.
 
-1. Read the source(s) fully.
-2. For each source:
-   a. Create or re-ingest the source page from `wiki/_templates.md` § source.
-   b. For each substantive entity / concept / thesis touched: update existing
-      page or create new (seed stub).
-   c. Update Related sections on every touched page (links bidirectional).
-3. Update `wiki/index.md`: add new pages under their domain, refresh the shape
-   paragraph if the wiki's scope has shifted, prepend a Recent Activity entry.
-4. Append a single `wiki/log.md` entry summarizing the whole ingest.
+Procedure (canonical: `AGENTS.md` § Ingest; extended: `wiki/_operations.md` § 2):
 
-If the ingest reveals an open question the source doesn't answer, file a
-`type: question` page rather than inventing an answer.
+1. Read the source fully. Locate it: genre, date, reliability tier per the charter.
+2. Extract the claims that bear on the charter's question classes; number S1…Sn.
+3. **Delta first** — for each claim, update its owner page:
+   - existing owner → integrate, cite `[[This Source]] S#`;
+   - contradiction → both sides `confidence: contested`, linked, `question` page if live;
+   - load-bearing claim with no owner → new seed (thesis, `load_when`, ≥1 key point,
+     ≥1 link);
+   - peripheral claim → stays housed in the source page only.
+4. Write the source page as a **ledger** (`wiki/_templates.md` § source): Snapshot,
+   Reliability (usable-for / not-usable-for), Key Claims → owners, Model Delta, Audit.
+   **Novelty budget**: if the delta is "confirms existing pages", the page is ~150-300
+   words — spend the saved effort on owner pages, not on a parallel summary.
+5. Update Related (bidirectional), `wiki/index.md` (domain entry, Load Next By Task if
+   a new routing need appeared, Recent Activity), and append one `wiki/log.md` entry
+   (one entry per batch wave, not per file).
 
-If a source page already exists and the raw file's mtime has advanced past the
-page's `updated:`, treat as **re-ingest** — mark the log entry accordingly and
-flag any contradictions with `confidence: contested`.
+If the source raises a question it doesn't answer, file a `question` page rather than
+inventing an answer. If a source page already exists and content has drifted
+(`src_bytes` mismatch), treat as re-ingest and mark the log entry accordingly.

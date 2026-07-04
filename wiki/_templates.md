@@ -1,184 +1,203 @@
 # Templates
 
-Scaffolds per page type. Copy the frontmatter and body for the type you're
-creating, replace bracketed placeholders, then prune sections that don't apply.
-Frontmatter fields are documented in `AGENTS.md` § Frontmatter.
+Scaffolds per page type. Copy the frontmatter and body for the type you're creating,
+replace bracketed placeholders, prune sections that don't apply. Frontmatter fields are
+documented in `AGENTS.md` § Frontmatter.
 
 Conventions used below:
 
 - `[bracketed]` text is a placeholder you replace.
-- *Italic guidance* explains the intent of a section; delete it from the
-  finished page.
-- All templates assume `updated:` is set to today's date when the page is created
-  or revised.
+- *Italic guidance* explains a section's intent; delete it from the finished page.
+- `updated:` is set to today's date on creation and every meaningful revision.
+- `tags:` is omitted from all scaffolds — add it only when a cross-cutting facet
+  genuinely recurs across pages.
 
 ---
 
 ## source
 
-*1:1 with a `raw/` file. Faithful summary plus extracted claims. The source
-page is the contract between the raw file and the rest of the wiki — other
-pages cite the source page, not the raw file directly. The audit sections
-(Weakest Claims, Important Omissions, Contradictions / Tensions, Model Delta)
-keep it honest about what the source does and does not establish.*
+*1:1 with a `raw/` file. A provenance ledger, not an essay. Other pages cite this page
+(at claim level), never the raw file directly. **Length scales with novelty**: a source
+that mostly confirms existing pages gets Snapshot + Reliability + Key Claims + Model
+Delta in ~150-300 words and stops. Only a source that genuinely moves the model earns
+the optional deep sections.*
 
     ---
     type: source
-    thesis: "[Single sentence: what this source argues / contains, and why it matters to the wiki.]"
-    status: working
+    thesis: "[What this source argues / contains, and what it changes in this wiki.]"
+    load_when: "[Task shapes that need this source's claims or its reliability posture.]"
+    status: live
     domain: [primary]
     importance: 5
     confidence: established
-    tags: []
     aliases: []
     sources: [raw/filename.ext]
+    src_bytes: [byte size of the raw file at ingest]
     updated: YYYY-MM-DD
     ---
 
-    [Author / origin / date / format. One sentence locating the source.]
+    [One sentence locating the source: author, origin, date, format.]
+
+    ## Snapshot
+    - **Origin**: [author / venue / date — and how it reached raw/]
+    - **Format**: [essay, transcript, auto-caption, AI-generated report, …]
+    - **Reliability**: [tier per the charter's source posture]
+    - **Usable for**: [what this source can support]
+    - **Not usable for**: [what it must not be stretched to support]
 
     ## Key Claims
-    - **[Claim 1]** — [supporting detail or page reference]. ([[Concept A]])
-    - **[Claim 2]** — [supporting detail].
-    - **[Claim 3]** — [supporting detail].
-
-    ## Summary
-    [Compressed account of the source. 1-3 paragraphs, faithful to the original;
-    not yet integrated into wider wiki argument. The reader should be able to
-    decide from this whether to read the raw file.]
-
-    ## Weakest Claims
-    - **[Claim]** — [the most load-bearing claim that is least supported; where the evidence is thin or missing]. *(or: none)*
-
-    ## Important Omissions
-    - [What a careful reader would expect this source to address but it does not]. *(or: none)*
-
-    ## Contradictions / Tensions
-    - [Where the source conflicts with itself, with other sources, or with existing wiki pages — link them]. *(or: none)*
+    - **S1** — [claim]. → owner: [[Concept A]]
+    - **S2** — [claim]. → owner: [[Concept B]]
+    - **S3** — [claim, unhoused — flagged for review]. *(house every claim you can)*
 
     ## Model Delta
-    [What this source changed, confirmed, challenged, or failed to change in the wiki's current model — the section that ties this ingest to the evolving whole. Name the pages it moves.]
+    [The section that ties this ingest to the evolving whole. What this source changed,
+    confirmed, challenged, or failed to change. Name the pages it moved. If the honest
+    answer is "no material change", say so — and keep this whole page short.]
+
+    ## Audit
+    - **Weakest claims**: [most load-bearing claim with thinnest support]. *(or: none)*
+    - **Important omissions**: [what a careful reader would expect but isn't here]. *(or: none)*
+    - **Contradictions / tensions**: [conflicts with itself or with existing pages — link them]. *(or: none)*
+
+    ## Summary
+    *Optional — only when the delta is substantial.* [Compressed account, 1-3 paragraphs,
+    faithful to the original. Enough to decide whether to read the raw file.]
 
     ## Notable Quotes
-    > "[Direct quotation worth preserving — load-bearing for downstream pages.]"
-    > — [page reference]
+    *Optional.*
+    > "[Direct quotation load-bearing for downstream pages.]" (S2)
 
     ## Related
-    - [[Entity X]] — [why this source bears on it]
-    - [[Concept Y]] — [the source's central frame]
+    - [[Concept A]] — [what this source contributes to it]
 
 ---
 
 ## entity
 
-*A real-world thing that warrants its own page: a person, organization,
-system, place, dataset, model, project. Aggregates information across
-sources.*
+*A real-world thing that warrants its own page: person, organization, system, place,
+dataset, project. Aggregates information across sources.*
 
     ---
     type: entity
-    thesis: "[What this entity is and why it earns a page in this wiki — distinguishing role.]"
+    thesis: "[What this entity is and why it earns a page — its distinguishing role here.]"
+    load_when: "[Task shapes that need this entity's identity, role, or relations.]"
     status: seed
     domain: [primary]
     importance: 5
     confidence: established
-    tags: []
     aliases: []
-    sources: [raw/source-A.md, raw/source-B.md]
+    sources: [raw/source-A.md]
     updated: YYYY-MM-DD
     ---
 
-    [1-2 sentence definition. What kind of thing is this, and why does it matter
-    to the wiki's central concerns.]
+    [1-2 sentence definition: what kind of thing, and why it matters to the charter.]
 
     ## Key Facts
     - **Identity** — [what it is, when it existed / exists]
-    - **Role / function** — [what it does, in this wiki's frame]
+    - **Role** — [what it does, in this wiki's frame]
     - **Relations** — [the most important other entities it touches]
 
     ## Body
-    [Aggregated information from sources. Cross-link to related entities and
-    concepts inline. Cite sources via [[source-page]] for important claims.
-    When sources disagree, surface the disagreement explicitly — do not smooth it.]
+    [Aggregated across sources, cited at claim level ([[Source Page]] S2). When sources
+    disagree, surface the disagreement — do not smooth it.]
 
     ## Related
     - [[Concept X]] — primary frame for understanding this entity
-    - [[Entity Y]] — [relation: e.g. "founded", "built", "succeeded"]
 
 ---
 
 ## concept
 
-*An abstraction or principle — a load-bearing idea that other pages reference.
-Defines, distinguishes, and bounds the concept.*
+*An abstraction or principle — a load-bearing idea other pages build on. The workhorse
+type: most of the model lives here, accumulating evidence across sources. A concept that
+swells past ~2,000 words with separable concerns becomes a hub (see below).*
 
     ---
     type: concept
-    thesis: "[Single-sentence definition + why this concept is load-bearing here.]"
+    thesis: "[Single-sentence definition + the claim that makes this concept load-bearing.]"
+    load_when: "[Task shapes for which this page is the right first read.]"
     status: seed
     domain: [primary]
     importance: 5
     confidence: established
-    tags: []
     aliases: []
     sources: [raw/source.md]
     updated: YYYY-MM-DD
     ---
 
-    [Definition in plain language, 1-2 sentences. Resist jargon. The first
-    sentence should make sense to someone outside the domain.]
+    [Definition in plain language, 1-2 sentences. The first sentence should make sense
+    to someone outside the domain.]
 
     ## Key Points
     - **Distinguishing feature** — what makes this not [[Adjacent Concept]].
-    - **Operational use** — how the concept is applied in practice.
-    - **Limits** — where the concept breaks down or stops being useful.
+    - **Operational use** — how it is applied in practice.
+    - **Limits** — where it breaks down or stops being useful.
 
     ## Body
-    [Full treatment: motivating examples, formalization if relevant, history if
-    relevant, contested aspects. Inline `[[links]]` to instances and adjacent
-    concepts. Show, don't just tell — concrete examples earn their space.]
+    [Full treatment: motivating examples, mechanism, contested aspects. Inline `[[links]]`,
+    claims cited at anchor level ([[Source Page]] S4). This page owns its claims — other
+    pages cite it rather than restating.]
+
+    ## Boundaries
+    *Optional — include when the concept is commonly overstretched.*
+    [What this concept's claims must not be taken to cover.]
 
     ## Related
     - [[Adjacent Concept]] — boundary
     - [[Thesis Using This]] — application
 
+### hub variant
+
+*A hub is a role a `concept` or `synthesis` page takes on when it routes a cluster of
+children. Add these sections to the scaffold above; keep the hub itself compact — it
+routes, the children own the depth.*
+
+    ## Decision Map
+    | If the task asks about… | Load | Why | Guardrail |
+    | --- | --- | --- | --- |
+    | [question shape] | [[Child A]] | [what it owns] | [what not to overclaim] |
+
+    ## Related
+    - [[Child A]] — child page; owns [the mechanism / the taxonomy / …]
+    - [[Child B]] — child page; owns […]
+
 ---
 
 ## thesis
 
-*Argues a position from evidence. The highest-value page type — a thesis is
-the wiki claiming something, with reasoning and evidence to back it.*
+*Argues a position from evidence. The wiki claiming something — the type that proves the
+wiki is compiling understanding rather than summaries. Seek these; review flags domains
+that accumulate evidence without ever arguing.*
 
     ---
     type: thesis
     thesis: "[The argument, in one sentence.]"
-    status: working
+    load_when: "[Task shapes where this position (or its evidence) changes the answer.]"
+    status: live
     domain: [primary, secondary]
     importance: 7
     confidence: probable
-    tags: []
     aliases: []
     sources: [raw/source-A.md, raw/source-B.md]
     updated: YYYY-MM-DD
     ---
 
-    [The claim, restated to set context. 1-2 sentences. Why this matters.]
+    [The claim restated with its significance. 1-2 sentences.]
 
     ## Key Points
-    - **Premise 1** — [supporting evidence] ([[source]]).
-    - **Premise 2** — [supporting evidence].
+    - **Premise 1** — [evidence] ([[Source Page]] S1).
+    - **Premise 2** — [evidence].
     - **Inference** — [the move from premises to conclusion].
     - **Counter-considerations** — [what would weaken the thesis].
 
     ## Argument
-    [Full case. Evidence linked. Counterarguments addressed, not dismissed.
-    Distinguish what's established from what's inferred — the reader should
-    always know which is which.]
+    [Full case. Evidence linked at anchor level. Counterarguments addressed, not
+    dismissed. The reader always knows what's established vs. inferred.]
 
     ## What would change my mind
-    [Concrete observations or arguments that would lower confidence to
-    `speculative` or move it to `contested`. If you can't name any, the thesis
-    is probably either tautological or under-specified.]
+    [Concrete observations that would demote confidence. If you can't name any, the
+    thesis is tautological or under-specified.]
 
     ## Related
     - [[Counter-Thesis]] — opposing position (link bidirectionally)
@@ -188,61 +207,56 @@ the wiki claiming something, with reasoning and evidence to back it.*
 
 ## synthesis
 
-*Maps a domain or topic. The synthesis names the through-line that holds a
-cluster of pages together — what the territory looks like when seen as a
-whole.*
+*Maps a domain or topic — names the through-line that holds a cluster together. A good
+synthesis tells you what the territory looks like seen whole; a bad one enumerates pages.
+Often serves as a domain's hub (add a Decision Map).*
 
     ---
     type: synthesis
-    thesis: "[What this synthesis maps and the through-line that holds the territory together.]"
-    status: working
+    thesis: "[What this maps and the through-line that organizes the territory.]"
+    load_when: "[Task shapes needing the domain seen whole, or entry routing into it.]"
+    status: live
     domain: [primary]
     importance: 8
     confidence: probable
-    tags: []
     aliases: []
     sources: []
     updated: YYYY-MM-DD
     ---
 
-    [One paragraph: the territory, the through-line, who needs this map. If this
-    page has `sources: []`, note in the body that it's a pure synthesis
-    drawing on the wiki's existing pages.]
+    [One paragraph: the territory, the through-line, who needs this map. If `sources: []`,
+    note that this is pure synthesis drawing on existing pages.]
 
     ## Landscape
     - **Sub-area A** ([[Page A]], [[Page B]]) — what this cluster argues / contains.
-    - **Sub-area B** ([[Page C]], [[Page D]]) — …
-    - **Sub-area C** ([[Page E]]) — …
+    - **Sub-area B** ([[Page C]]) — …
 
     ## Through-line
-    [The argument or pattern that organizes the landscape. Why these sub-areas
-    belong together. What the field looks like when seen as a whole — not just
-    listed but understood.]
+    [The argument or pattern that organizes the landscape — why these belong together,
+    understood rather than listed.]
 
     ## Open frontiers
     - [[Question X]] — why it matters
-    - [[Question Y]] — what would resolve it
 
     ## Related
     - [[Adjacent Synthesis]] — boundary domain
-    - [[Foundational Concept]] — frame this synthesis assumes
 
 ---
 
 ## analysis
 
-*A query-generated comparison or investigation. Crystallized answer to a
-question that's likely to recur. Lighter weight than a thesis — analysis
-answers; thesis argues.*
+*A crystallized answer to a question likely to recur. Lighter than a thesis — analysis
+answers; thesis argues. Cheap to create: any query whose answer took real assembly work
+should leave one behind.*
 
     ---
     type: analysis
-    thesis: "[What was asked and the conclusion in one sentence.]"
-    status: working
+    thesis: "[What was asked and the conclusion, in one sentence.]"
+    load_when: "[The recurring question shapes this answer serves.]"
+    status: live
     domain: [primary]
     importance: 5
     confidence: probable
-    tags: []
     aliases: []
     sources: [raw/source-A.md]
     updated: YYYY-MM-DD
@@ -253,55 +267,50 @@ answers; thesis argues.*
     **Answer:** [1-2 sentences. The conclusion, plainly stated.]
 
     ## Reasoning
-    [Steps from question to answer. Evidence cited inline. Alternative
-    conclusions considered and rejected, with reasons.]
+    [Steps from question to answer. Evidence cited at anchor level. Alternatives
+    considered and rejected, with reasons.]
 
     ## Confidence and limits
-    [What would change the answer. What evidence is missing. What would
-    promote this from `probable` to `established` (or demote it to
-    `speculative`).]
+    [What would change the answer; what evidence is missing.]
 
     ## Related
-    - [[Page A]], [[Page B]] — used in answer
-    - [[Question]] — origin (if this analysis resolves an open question)
+    - [[Page A]] — used in answer
+    - [[Question]] — origin (if this resolves an open question)
 
 ---
 
 ## question
 
-*An open question, research gap, or knowledge frontier. Questions are
-first-class citizens — they record what we want to know, not just what we
-already know.*
+*An open question, research gap, or knowledge frontier. First-class: questions record
+what the wiki wants to know. Cheap to create: every query the wiki couldn't answer and
+every unresolved tension between sources should leave one behind.*
 
     ---
     type: question
     thesis: "[The question, made precise — and why answering it would matter.]"
+    load_when: "[Task shapes that should know this is open before answering confidently.]"
     status: seed
     domain: [primary]
     importance: 5
     confidence: speculative
-    tags: [open-question]
     aliases: []
     sources: []
     updated: YYYY-MM-DD
     ---
 
-    **Question:** [the precise form of the question — vague questions don't earn pages]
+    **Question:** [precise form — vague questions don't earn pages]
 
-    **Why it matters:** [1-2 sentences. What changes downstream if this is
-    answered? Which pages would need updating?]
+    **Why it matters:** [What changes downstream if answered? Which pages would move?]
 
     ## What we know
     - [[Page A]] — [bears on this how]
-    - [[Page B]] — [bears on this how]
 
     ## What would resolve it
-    - **Evidence type 1** — [what kind of evidence, and where it might come from]
-    - **Evidence type 2** — …
+    - [evidence type, and where it might come from]
 
     ## Status
-    Open  *(or: Partial → [[partial answer page]], or: Resolved → [[resolution page]])*
+    Open  *(or: Partial → [[partial answer]], or: Resolved → [[resolution]] — resolved
+    questions stay as a record of the inquiry)*
 
     ## Related
     - [[Adjacent Question]] — same frontier
-    - [[Concept X]] — the question's central frame
