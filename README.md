@@ -10,12 +10,6 @@ The result is a reusable template, a small Python toolkit, and a worked example 
 
 [See a correction propagate](examples/lumen/README.md) · [Try it](#try-it) · [Inspect the design](docs/ARCHITECTURE.md) · [Read the validation record](docs/VALIDATION.md)
 
-## Cyborgism: cognition, partnership, agency
-
-[Cyborgism](https://github.com/PetreLaskov/personal-ai-os) is my inquiry into **extended and distributed cognition**: thinking that takes place across a person, AI agents, and a shared body of knowledge. Its central tension is that I want AI to extend my mind while remaining capable of meeting me as something other than a reflection of it. A perfectly agreeable extension would carry my blind spots further; a thinking partner must be able to bring something I did not put in. From the early vault contracts through Cyborgism 1–4, Corpus, and Workspace OS, I have explored this as human–AI partnership: holding complexity beyond one working memory, letting past and present thinking meet, and allowing new questions and possibilities to emerge through encounter with another kind of mind.
-
-This makes **agency in an age of agents** a practical philosophical question. If an agent can help frame the problem, imagine the alternatives, and carry out the work, human agency has to include learning how to participate in that larger system: exercising judgment, discovering and revising purposes, and becoming more capable through the collaboration. Knowledge Compiler supplies one part of its shared cognitive ground. Sources, interpretations, disagreements, and open questions become material we can think with across sessions. The ambition is a continuing practice of inquiry, creation, and action in which both the understanding and the human participant can develop.
-
 ## The problem shows up on the second visit
 
 An agent reads some material, explains it well, and helps you reach a useful conclusion. Next month, you return with another question. Which parts of that explanation came from the sources? Which were the agent’s interpretation? Did a later correction change the conclusion? Where did the previous session stop?
