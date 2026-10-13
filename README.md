@@ -10,6 +10,12 @@ The result is a reusable template, a small Python toolkit, and a worked example 
 
 [See a correction propagate](examples/lumen/README.md) · [Try it](#try-it) · [Inspect the design](docs/ARCHITECTURE.md) · [Read the validation record](docs/VALIDATION.md)
 
+## The inquiry behind the compiler
+
+[Cyborgism](https://github.com/PetreLaskov/personal-ai-os), my series of experiments with personal AI environments, begins with a peculiar possibility: a system built to answer questions can help change the questions we are able to ask. Across four iterations, and later in Corpus and Workspace OS, I explored forms of collaboration with intelligence of a different architecture: reasoning together, challenging assumptions, creating, and attending to experience. The philosophical stakes enter through ordinary interaction. Does the exchange enlarge my capacity to think and act? Can it surprise me without acquiring unearned authority? What becomes possible when I allow the encounter to change my intentions as well as help carry them out? These are questions about how to live with developing AI, pursued through the practice of working with it.
+
+Knowledge Compiler gives one part of that inquiry a durable form. What a system remembers helps determine what the next encounter can become. Preserve only conclusions, and yesterday’s interpretation can quietly become tomorrow’s unquestioned premise; preserve reasons, disagreements, and open questions, and the next conversation has something to examine and develop. The aim is continuity that supports discovery while allowing both the inquiry and the person pursuing it to change. Some encounters yield decisions or artifacts; others change what seems worth noticing. The compiler preserves the work we want to return to; its value depends on what that makes possible in thinking, learning, creating, and living.
+
 ## The problem shows up on the second visit
 
 An agent reads some material, explains it well, and helps you reach a useful conclusion. Next month, you return with another question. Which parts of that explanation came from the sources? Which were the agent’s interpretation? Did a later correction change the conclusion? Where did the previous session stop?
