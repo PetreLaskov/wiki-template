@@ -1,0 +1,11 @@
+Created blank instance: <temporary-path>
+Fresh charter/history; no raw sources, compiled pages, grading keys, or research reports copied. Operating instructions were reused.
+{
+  "root": "<temporary-instance>",
+  "pages": 0,
+  "raw_files": 0,
+  "claims": 0,
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

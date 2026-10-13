@@ -1,11 +1,10 @@
-# OS
+__pycache__/
+*.py[cod]
+.venv/
 .DS_Store
-Thumbs.db
-
-# Obsidian
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-
-# Temporary
+.obsidian/workspace*.json
+evals/runs/
+dist/
 *.tmp
-*~
+
+# Keep .kc/integrity.json versioned. It is part of the evidence history.

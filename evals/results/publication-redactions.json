@@ -1,0 +1,54 @@
+{
+  "published_at": "2026-10-13",
+  "scope": "Publication copies of historical reports; local paths redacted only. Original observed manifest retains original workspace hashes.",
+  "records": [
+    {
+      "path": "docs/PRIOR_AUDIT.md",
+      "original_sha256": "5f3426c46f7cb9d9c5073f6698ebb3e1012d8a33c47384b0a89c51e3c6d85224",
+      "publication_sha256": "610823b51b8df74b36c758f1edd7e18777539031f9bff4aeb37afe2d0edeb856",
+      "change": "Local paths redacted; redundant final blank line removed. Substantive audit retained."
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "original_sha256": "2207ba95f577ed89c0d31487d0e508be52994e0922d4572ff05120ddf69c6494",
+      "publication_sha256": "8ff8f2be8ec718b099367e74e4dc2df2c23125181cd65b6647a0a5139fb26fd5",
+      "change": "Local runtime path redacted; dated 13 October release-check result appended. September results retained."
+    },
+    {
+      "path": "evals/results/blank-check.json",
+      "original_sha256": "56e71ac459569dbd2476c0ff01d01c1f3a531759ea6e6c7523d91bc6f01ccf64",
+      "publication_sha256": "7ca9abf8e137b71368acb6a98ae29d068ae19f2249ff935493ef33b0e041ce60",
+      "change": "Local runtime, prior-template or temporary directory path redacted; substantive reported results retained."
+    },
+    {
+      "path": "evals/results/fresh-instance-check.txt",
+      "original_sha256": "2bd5b40308a2cf20259421f44aa14e4251267473074fb14972189f20eef852a2",
+      "publication_sha256": "ab20522c508fc1c2b55f9b4569b6356afabf52e4f00b5889e563fc0a9fcaf213",
+      "change": "Local runtime, prior-template or temporary directory path redacted; substantive reported results retained."
+    },
+    {
+      "path": "evals/results/software-tests.txt",
+      "original_sha256": "c86f43f3db332f7bc8e9e5e204b1598bef3a36d259e84c3dbf783ef04686a077",
+      "publication_sha256": "961c5133cada44ff877a33039ac72bb2c73a90a6d70960cd77fad1d39d6a95a5",
+      "change": "Local runtime, prior-template or temporary directory path redacted; substantive reported results retained."
+    },
+    {
+      "path": "evals/results/observed/current-correction/work-record.md",
+      "original_sha256": "9e2e82122f5b2a6707033ab874786e374216afa06f311f5b8624f138cb8466b9",
+      "publication_sha256": "b3d29828a25215af9e280fab9989397eeff4b6bb583b0e1d968bba9086f46b8f",
+      "change": "Local runtime, prior-template or temporary directory path redacted; substantive reported results retained."
+    },
+    {
+      "path": "evals/results/observed/current-recovery/work-record.md",
+      "original_sha256": "d6f5bf6414765da7696b25383b4af2011f3abecb67ec8264d169759c42f8586b",
+      "publication_sha256": "52670a247b15df69e0c44feb5796aac436638f5d7e01e99c8017071b0a0d6e14",
+      "change": "Local runtime, prior-template or temporary directory path redacted; substantive reported results retained."
+    },
+    {
+      "path": "evals/results/observed/prior-correction/work-record.md",
+      "original_sha256": "8a2288e1614a120cd251e5e70b0ddbfbc5c4e96fac1bde03dba980f013f625d6",
+      "publication_sha256": "efbd971cfe65d155400c15aa68f6250c966c408d271ba820575454686196c3de",
+      "change": "Local runtime, prior-template or temporary directory path redacted; substantive reported results retained."
+    }
+  ]
+}

@@ -1,42 +1,35 @@
-# Index
+# Working understanding
 
 ## Charter
 
-*Not yet written. Run **charter** mode before the first ingest: it drafts, from the
-actual sources plus one exchange with the user — (1) what this wiki compiles and its
-through-line; (2) the 3-7 question classes a future agent must answer well from it;
-(3) source posture and reliability tiers; (4) page economics — what deserves a page
-here; (5) what NOT to treat the wiki as. A wiki without a charter compiles blind.*
+**State: bootstrap.** No corpus or personal priorities have been supplied to this
+instance. Draft the following from the user's purpose and representative sources
+when first compiling; do not mistake these prompts for a completed charter.
 
-## State of the Model
+- Purpose: what we are trying to understand, decide, or practise.
+- Recurring questions: two to five concrete examples that will test usefulness.
+- Evidence posture: what these sources can support; major shared origins or gaps.
+- Boundaries: what this corpus cannot establish; relevant user constraints/values.
+- Page economics: what deserves durable understanding here; what can stay in raw.
 
-*Nothing compiled yet. Rewritten at every review (≤300 words): what the wiki currently
-understands — through-line, strongest claims, live tensions, maturity, next leverage.
-This section is the single most valuable read in the repo; if it stops being true,
-fixing it outranks any ingest.*
+## Current understanding
 
-## Load Next By Task
+No compiled conclusions yet.
 
-| Task or question shape | Load first | Then |
+## Where to look
+
+| Question or task | Page | Why it helps / important limit |
 | --- | --- | --- |
-| *One row per charter question class; rows added as routing needs emerge.* | | |
 
-## Open Questions
+## Open questions and revision triggers
 
-*None yet. The most active ~5 `type: question` pages surface here.*
+None recorded yet.
 
-## Recent Activity
+## Page register
 
-- [2026-07-04] init | Knowledge Compiler v2 initialized — empty wiki, awaiting charter
+No content pages yet. Register every content page here with a wikilink. Routes may
+link through a hub; keep the complete register below them as the corpus grows.
 
----
+## Recent changes
 
-*Domains appear below as content is added. Pattern, repeated per domain:*
-
-    ## Domain: Name
-    One-sentence abstract. Hubs first, in bold.
-
-    - **[[Hub Page]]** — thesis (importance) ← routes this domain
-    - [[Page]] — thesis (importance)
-
-*Delete this scaffolding block once the first real domain header is in place.*
+No corpus changes yet. See `log.md` for operations after first use.

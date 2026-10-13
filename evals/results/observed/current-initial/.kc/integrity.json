@@ -1,0 +1,40 @@
+{
+  "claims": {
+    "Definition Pilot#S1": {
+      "raw": "raw/01 Definition Pilot.md",
+      "sha256": "73a0891249507adeb0393f515ed2362408ed11ad6719665b9605e06ae7e22d4a",
+      "source_sha256": "36242fd4b6b1d56438a33dfbbdc3ab1196d6864a9dcadd753020453a751d848a"
+    },
+    "Definition Pilot#S2": {
+      "raw": "raw/01 Definition Pilot.md",
+      "sha256": "6f5de90bd266f91f278e3c0bb1e0138eaf26b6e0ba5f069abe328d9b81300f12",
+      "source_sha256": "36242fd4b6b1d56438a33dfbbdc3ab1196d6864a9dcadd753020453a751d848a"
+    },
+    "Novel Case Audit#S1": {
+      "raw": "raw/03 Novel Case Audit.md",
+      "sha256": "35384c1035b91b416bebae09396f9d99c45dd2e19add20eaeb1a1fa20257e2d9",
+      "source_sha256": "cf2ca39464493306ebcd23b5bb1775a2312f03d26829c17026fec2231b0cf548"
+    },
+    "Novel Case Audit#S2": {
+      "raw": "raw/03 Novel Case Audit.md",
+      "sha256": "8b6056ce2d262daa5698a25efb8bc0ed5964a2045fb20b0dbf081a27509aa437",
+      "source_sha256": "cf2ca39464493306ebcd23b5bb1775a2312f03d26829c17026fec2231b0cf548"
+    },
+    "Team Newsletter#S1": {
+      "raw": "raw/02 Team Newsletter.md",
+      "sha256": "a49ff5dee342925b5e3c5c6d046cdba7b938f89665ef90e577e1b75029e1754c",
+      "source_sha256": "c5a54c4350b7c8e5c8d43f621af970bdb21451d663a4965436e8d2c85813438f"
+    },
+    "Team Newsletter#S2": {
+      "raw": "raw/02 Team Newsletter.md",
+      "sha256": "bd1666f47e7c29586c445bad5217bf9bf47f9c35351f9bbf0c6ebd03ce205732",
+      "source_sha256": "c5a54c4350b7c8e5c8d43f621af970bdb21451d663a4965436e8d2c85813438f"
+    }
+  },
+  "raw": {
+    "raw/01 Definition Pilot.md": "36242fd4b6b1d56438a33dfbbdc3ab1196d6864a9dcadd753020453a751d848a",
+    "raw/02 Team Newsletter.md": "c5a54c4350b7c8e5c8d43f621af970bdb21451d663a4965436e8d2c85813438f",
+    "raw/03 Novel Case Audit.md": "cf2ca39464493306ebcd23b5bb1775a2312f03d26829c17026fec2231b0cf548"
+  },
+  "version": 1
+}

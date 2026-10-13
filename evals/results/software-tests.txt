@@ -1,0 +1,63 @@
+test_additive_seal_preserves_all_existing_records (test_kc.CompilerTests.test_additive_seal_preserves_all_existing_records) ... ok
+test_alias_cannot_shadow_a_title (test_kc.CompilerTests.test_alias_cannot_shadow_a_title) ... ok
+test_all_content_pages_need_index_registration (test_kc.CompilerTests.test_all_content_pages_need_index_registration) ... ok
+test_arbitrary_empty_directory_does_not_pass_as_instance (test_kc.CompilerTests.test_arbitrary_empty_directory_does_not_pass_as_instance) ... ok
+test_binary_source_needs_manual_locator (test_kc.CompilerTests.test_binary_source_needs_manual_locator) ... ok
+test_claim_ids_require_exact_level_three_headings (test_kc.CompilerTests.test_claim_ids_require_exact_level_three_headings) ... ok
+test_claim_impact_does_not_conflate_unrelated_claim_ids (test_kc.CompilerTests.test_claim_impact_does_not_conflate_unrelated_claim_ids) ... ok
+test_claim_same_length_mutation_and_whitespace_changes_are_detected (test_kc.CompilerTests.test_claim_same_length_mutation_and_whitespace_changes_are_detected) ... ok
+test_cli_default_root_and_lint_adapter_run_from_another_directory (test_kc.CompilerTests.test_cli_default_root_and_lint_adapter_run_from_another_directory) ... ok
+test_code_examples_comments_and_indented_code_are_inactive (test_kc.CompilerTests.test_code_examples_comments_and_indented_code_are_inactive) ... ok
+test_compiled_pages_cannot_keep_bootstrap_charter_marker (test_kc.CompilerTests.test_compiled_pages_cannot_keep_bootstrap_charter_marker) ... ok
+test_corrections_and_derived_pages_can_change_without_rewriting_claim (test_kc.CompilerTests.test_corrections_and_derived_pages_can_change_without_rewriting_claim) ... ok
+test_current_partial_source_is_limited_but_not_pending (test_kc.CompilerTests.test_current_partial_source_is_limited_but_not_pending) ... ok
+test_deleted_claim_and_reused_id_are_rejected (test_kc.CompilerTests.test_deleted_claim_and_reused_id_are_rejected) ... ok
+test_deleted_raw_and_source_page_are_rejected (test_kc.CompilerTests.test_deleted_raw_and_source_page_are_rejected) ... ok
+test_duplicate_ordinary_headings_and_aliases_are_errors (test_kc.CompilerTests.test_duplicate_ordinary_headings_and_aliases_are_errors) ... ok
+test_duplicate_source_ids_are_errors (test_kc.CompilerTests.test_duplicate_source_ids_are_errors) ... ok
+test_empty_workspace_passes_without_warnings (test_kc.CompilerTests.test_empty_workspace_passes_without_warnings) ... ok
+test_every_citation_is_checked_including_second_invalid_claim (test_kc.CompilerTests.test_every_citation_is_checked_including_second_invalid_claim) ... ok
+test_explicit_empty_source_requires_disposition (test_kc.CompilerTests.test_explicit_empty_source_requires_disposition) ... ok
+test_external_links_are_not_fetched_or_claimed_verified (test_kc.CompilerTests.test_external_links_are_not_fetched_or_claimed_verified) ... ok
+test_flat_wiki_is_enforced (test_kc.CompilerTests.test_flat_wiki_is_enforced) ... ok
+test_heading_and_locator_do_not_count_as_a_source_statement (test_kc.CompilerTests.test_heading_and_locator_do_not_count_as_a_source_statement) ... ok
+test_integrity_symlink_escape_is_rejected (test_kc.CompilerTests.test_integrity_symlink_escape_is_rejected) ... skipped "Symlinks unavailable on this host: [WinError 1314] A required privilege is not held by the client: '<temporary-path>' -> '<temporary-path>'"
+test_invalid_baseline_cannot_be_replaced_by_seal (test_kc.CompilerTests.test_invalid_baseline_cannot_be_replaced_by_seal) ... ok
+test_invalid_dates_and_unknown_optional_metadata (test_kc.CompilerTests.test_invalid_dates_and_unknown_optional_metadata) ... ok
+test_line_ranges_validate_start_end_and_decoded_raw_count (test_kc.CompilerTests.test_line_ranges_validate_start_end_and_decoded_raw_count) ... ok
+test_local_markdown_paths_cannot_escape_workspace (test_kc.CompilerTests.test_local_markdown_paths_cannot_escape_workspace) ... ok
+test_malformed_and_duplicate_frontmatter_are_errors (test_kc.CompilerTests.test_malformed_and_duplicate_frontmatter_are_errors) ... ok
+test_missing_duplicate_and_inactive_locators_fail (test_kc.CompilerTests.test_missing_duplicate_and_inactive_locators_fail) ... ok
+test_missing_page_is_not_silently_treated_as_external (test_kc.CompilerTests.test_missing_page_is_not_silently_treated_as_external) ... ok
+test_operational_pages_are_metadata_exempt_but_links_checked (test_kc.CompilerTests.test_operational_pages_are_metadata_exempt_but_links_checked) ... ok
+test_page_impact_includes_all_claim_references (test_kc.CompilerTests.test_page_impact_includes_all_claim_references) ... ok
+test_partial_source_needs_scope_and_may_be_current_with_declared_scope (test_kc.CompilerTests.test_partial_source_needs_scope_and_may_be_current_with_declared_scope) ... ok
+test_raw_directory_symlink_escape_is_rejected (test_kc.CompilerTests.test_raw_directory_symlink_escape_is_rejected) ... skipped "Symlinks unavailable on this host: [WinError 1314] A required privilege is not held by the client: '<temporary-path>' -> '<temporary-path>'"
+test_raw_file_symlink_escape_is_rejected (test_kc.CompilerTests.test_raw_file_symlink_escape_is_rejected) ... skipped "Symlinks unavailable on this host: [WinError 1314] A required privilege is not held by the client: '<temporary-path>' -> '<temporary-path>'"
+test_recomputing_declared_hash_cannot_reseal_changed_raw (test_kc.CompilerTests.test_recomputing_declared_hash_cannot_reseal_changed_raw) ... ok
+test_relative_markdown_links_validate_files_and_headings (test_kc.CompilerTests.test_relative_markdown_links_validate_files_and_headings) ... ok
+test_renaming_sealed_source_even_with_alias_does_not_change_identity (test_kc.CompilerTests.test_renaming_sealed_source_even_with_alias_does_not_change_identity) ... ok
+test_same_bytes_new_raw_binding_cannot_rebind_old_claim (test_kc.CompilerTests.test_same_bytes_new_raw_binding_cannot_rebind_old_claim) ... ok
+test_same_length_raw_mutation_is_hard_error_and_seal_refused (test_kc.CompilerTests.test_same_length_raw_mutation_is_hard_error_and_seal_refused) ... ok
+test_seal_is_noop_for_unchanged_accepted_material (test_kc.CompilerTests.test_seal_is_noop_for_unchanged_accepted_material) ... ok
+test_seal_lock_refuses_concurrent_writer (test_kc.CompilerTests.test_seal_lock_refuses_concurrent_writer) ... ok
+test_search_is_deterministic_bounded_and_optionally_searches_raw (test_kc.CompilerTests.test_search_is_deterministic_bounded_and_optionally_searches_raw) ... ok
+test_search_surfaces_status_coverage_and_returns_error_for_drift (test_kc.CompilerTests.test_search_surfaces_status_coverage_and_returns_error_for_drift) ... ok
+test_source_markdown_line_ending_changes_do_not_change_claim_identity (test_kc.CompilerTests.test_source_markdown_line_ending_changes_do_not_change_claim_identity) ... ok
+test_source_raw_path_cannot_traverse_outside_raw (test_kc.CompilerTests.test_source_raw_path_cannot_traverse_outside_raw) ... ok
+test_status_reports_raw_backlog_drafts_contested_and_recovery_text (test_kc.CompilerTests.test_status_reports_raw_backlog_drafts_contested_and_recovery_text) ... ok
+test_unclosed_frontmatter_is_an_error (test_kc.CompilerTests.test_unclosed_frontmatter_is_an_error) ... ok
+test_unsafe_directory_is_pruned_before_walker_can_descend (test_kc.CompilerTests.test_unsafe_directory_is_pruned_before_walker_can_descend) ... ok
+test_unsealed_source_hash_mismatch_cannot_be_blessed (test_kc.CompilerTests.test_unsealed_source_hash_mismatch_cannot_be_blessed) ... ok
+test_valid_source_alias_and_exact_ordinary_heading (test_kc.CompilerTests.test_valid_source_alias_and_exact_ordinary_heading) ... ok
+test_wrong_metadata_types_report_errors_without_crashing (test_kc.CompilerTests.test_wrong_metadata_types_report_errors_without_crashing) ... ok
+test_existing_destination_is_preserved (test_new_instance.NewInstanceTests.test_existing_destination_is_preserved) ... ok
+test_missing_required_file_does_not_create_destination (test_new_instance.NewInstanceTests.test_missing_required_file_does_not_create_destination) ... ok
+test_new_instance_excludes_private_data_and_eval_keys (test_new_instance.NewInstanceTests.test_new_instance_excludes_private_data_and_eval_keys) ... ok
+test_personalized_bootstrap_charter_and_history_are_not_copied (test_new_instance.NewInstanceTests.test_personalized_bootstrap_charter_and_history_are_not_copied) ... ok
+test_populated_source_refused (test_new_instance.NewInstanceTests.test_populated_source_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 58 tests in 2.392s
+
+OK (skipped=3)

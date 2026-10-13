@@ -1,236 +1,134 @@
 # Knowledge Compiler
 
-A Karpathy-style wiki maintained by an AI agent. You provide raw sources. The agent
-compiles them into an interlinked model of the domain: pages whose frontmatter surfaces
-a thesis and a routing trigger, bodies that follow a compression gradient, claims that
-trace to numbered anchors in their sources, and hubs that route a future agent to
-exactly the pages a task needs.
+**Give an agent a body of understanding it can return to, inspect, and revise.**
 
-It works for: research fields tracked over time, a thinker's corpus, internal knowledge
-that accumulates across documents, long investigations, technical domains where
-understanding builds. It does not work for tiny note collections, real-time data, code
-references, or anything that doesn't benefit from interconnection. See
-[When this approach is wrong](#when-this-approach-is-wrong).
+Knowledge Compiler turns a growing collection of sources into a maintained Markdown wiki: linked explanations, source claims, open questions, and decisions, with a route back to the evidence behind them. A later agent can pick up the inquiry, see what remains unfinished, and work out what needs to change when new evidence arrives.
 
-This document is the operator's manual. The agent's contract is `AGENTS.md`; the
-extended manual is `wiki/_operations.md`. Read this first.
+I built and iterated this with Claude Code and Codex, starting from [Andrej Karpathy’s LLM Wiki idea](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). I have applied the compiler lineage to personal archive work, research into working with AI, and subject wikis, while comparing and reconstructing the reusable template itself. This edition is the September 2026 Astra reconstruction of the Fable-era template and its subsequent v3 working tree.
 
----
+The result is a reusable template, a small Python toolkit, and a worked example you can inspect. The source collections from my private projects stay private.
 
-## The abstraction
+[See a correction propagate](examples/lumen/README.md) · [Try it](#try-it) · [Inspect the design](docs/ARCHITECTURE.md) · [Read the validation record](docs/VALIDATION.md)
 
-The agent is a **compiler**. The mapping is wholesale from software:
+## The problem shows up on the second visit
 
-| In this repo | Software analog |
-|---|---|
-| `raw/` | source code (immutable input) |
-| `wiki/` | build artifact (regenerable output) |
-| the agent | compiler |
-| `AGENTS.md` | language spec |
-| the charter (in `wiki/index.md`) | build target |
-| `tools/lint.py` | static analysis |
-| `review` | garbage collection + optimization pass |
-| `wiki/log.md` | build log (rotated) |
-| `wiki/index.md` | symbol table + linker map |
-| `wiki/_state.md` | incremental build state |
+An agent reads some material, explains it well, and helps you reach a useful conclusion. Next month, you return with another question. Which parts of that explanation came from the sources? Which were the agent’s interpretation? Did a later correction change the conclusion? Where did the previous session stop?
 
-Every wiki page is the agent's current best compilation of its sources. If a source
-changes, the page can be re-compiled. If the wiki feels off, the fix is usually
-upstream (sharper charter, sharper source, sharper request) — not hand-editing output.
+A useful working memory has to retain those distinctions. Otherwise, yesterday’s plausible answer becomes today’s undocumented premise.
 
-The one number that matters: a future agent reasoning from this wiki must beat an agent
-given only `raw/` and grep — better answers, fewer tokens. Everything below exists to
-win that comparison.
+The compiler maintains two things together: an account of what the sources say, and a revisable account of what follows from them. It organizes that work around questions you expect to revisit. New material can change an existing explanation, qualify a decision, open a question, or add supporting evidence without producing another essay.
 
----
+The next session starts from a small index and follows the relevant pages back to decisive passages. Direct access to the raw sources remains available throughout.
 
-## The load-bearing pieces
+## A correction with somewhere to go
 
-### Charter
+The included **Lumen** example is entirely fictional.
 
-The `## Charter` section of `wiki/index.md`: what the wiki compiles, the **question
-classes** a future agent must answer well from it, how sources are to be trusted, and
-what deserves a page. It is the wiki's optimization target — page economics, routing,
-and synthesis priorities all trace back to it. The observed failure mode without one:
-the wiki drifts into a pile of per-file summaries that no future task ever loads.
-`/charter` drafts it from your first sources plus one question to you.
+A pilot reports that Recall Cards take **four minutes**, compared with **eight minutes** for Case Notebook. Both score **54 out of 60** on exact definitions. A newsletter repeats the result and makes a much broader promise.
 
-### Thesis and load_when
+Then a correction arrives: the Cards figure omitted **six minutes of setup**. The comparable totals are ten minutes versus eight.
 
-Every page carries two compressed sentences in frontmatter:
+The arithmetic takes a moment. Finding the conclusions that depended on the old arithmetic is the maintenance work.
 
-```yaml
-thesis: "The claim this page stands for — its information-theoretic limit."
-load_when: "The task shapes for which a future agent should load this page."
+In the completed example, the agent:
+
+- preserves the original snapshots and previously issued source claims;
+- adds the correction as new evidence and withdraws the time-saving rationale;
+- updates the decision page, source notices, and index;
+- retains the unchanged accuracy result and the limits of the study;
+- recognizes that the newsletter repeats the same evidence, rather than treating it as another study.
+
+The revised answer does not turn a reversed timing comparison into a universal winner. It explains exactly which reason for a recommendation has disappeared.
+
+Read the [initial answer](examples/lumen/initial-answer.md), the [correction](<examples/lumen/raw/04 Timing Correction.md>), and the [revised answer](examples/lumen/correction-answer.md). Then inspect the files yourself:
+
+```sh
+python tools/kc.py --root examples/lumen check
+python tools/kc.py --root examples/lumen impact "Definition Pilot#S1"
 ```
 
-Thesis is what the page says; `load_when` is when it's worth reading. If you can't
-write the thesis, the topic isn't sharp enough to earn a page. If you can't write
-`load_when`, nobody will ever load it — question why it exists.
+`impact` returns linked pages that may need review. The agent must still inspect them and search for uncited copies of the old conclusion.
 
-### Compression gradient
+## How the system works
 
-Density matches access pattern: frontmatter (max compression) → opening (1-2 sentences)
-→ Key Points (~80% of value, scannable) → body (full depth) → Related (one-liners).
-The same gradient governs the whole wiki: State of the Model (≤300 words) → index
-routing table → hubs → pages → source ledgers → raw files. Growth is absorbed at the
-bottom of the pyramid; the top stays fixed-size so a session's first read never grows.
+The division of labor is deliberate: an agent reads, reasons, and edits; ordinary code checks the things that can be checked mechanically.
 
-### Ownership, hubs, claim anchors
+```mermaid
+flowchart LR
+    Q[Questions and purpose] --> W[Revisable understanding]
+    R[Preserved source snapshots] --> S[Claims with exact locations]
+    S --> W
+    W --> A[Answers, decisions, and practice]
+    C[New evidence or correction] --> R
+    C --> I[Dependency review]
+    I --> W
+```
 
-- **One claim, one home.** Every claim has exactly one owner page; everything else
-  cites or routes to it. Redundancy is how wikis rot.
-- **Hubs** route clusters: a Decision Map table (task → child page → guardrail) plus
-  Related entries naming what each child owns. Concepts that swell get hub-extracted,
-  not longer.
-- **Claim anchors**: source pages number their claims (`**S1**`, `**S2**`…); derived
-  pages cite `([[Source Page]] S3)`. Any claim in the wiki is auditable to its exact
-  spot in the evidence without re-reading raw files.
+| Part | Responsibility |
+| --- | --- |
+| `raw/` | Preserve source snapshots. A correction is a new file. |
+| Source pages | Record what a source says, its reading coverage, exact locations, and stable claim references. |
+| Notes, questions, decisions, and practices | Develop interpretations, alternatives, implications, and conditions that would change a view. |
+| `wiki/index.md` | Route the next question to the few pages worth reading. |
+| `wiki/_state.md` | Record unfinished work so another session can resume against the actual files. |
+| `tools/kc.py` and `.kc/` | Check structure and accepted evidence records; search the corpus; expose possible correction impact. |
 
-### Delta-first ingest
+A citation such as `[[Definition Pilot#S1]]` points to a specific source claim with a locator into the raw snapshot. Once sealed, edits to the accepted claim block trigger an integrity error. A correction gets a new claim and an explicit notice.
 
-The unit of ingest is the **model delta**, not the source summary. The agent updates
-the owner pages first — that's where compounding happens — then writes the source page
-as a short provenance ledger: snapshot, reliability (usable-for / not-usable-for),
-numbered claims with owner pointers, and the Model Delta. Ledger length scales with
-novelty: a source that only confirms existing pages gets ~200 words, and the effort
-goes into the pages it confirmed. A wiki that is 80% source summaries is compiling
-nothing; the derived layer (concepts, theses, syntheses, questions) is the product.
+SHA-256 fingerprints and additive integrity records detect changes to accepted source bytes and claim blocks. They do not establish that a source is true. That distinction is part of the architecture: a green check cannot settle an argument.
 
-### Mechanical verification
+The files remain ordinary Markdown. Obsidian is optional. The toolkit uses Python’s standard library; it needs no database, embedding service, or model API integration. You bring an agent with access to the folder.
 
-`python tools/lint.py` (Windows: `tools\lint.cmd`) checks everything checkable —
-frontmatter vocabulary, link and anchor resolution, raw↔source coverage, index
-registration, encoding corruption, staleness, oversized pages, domain swelling — and
-prints a disposal queue for review. The agent's context is spent on judgment (are
-theses claims? is confidence calibrated?), never on counting. Run it whenever you're
-curious; it changes nothing.
+## What I built with agents
 
-### Seven types, two statuses
+Karpathy supplied the high-level pattern. My work has been taking that pattern through implementation, use, comparison, and reconstruction for the kinds of inquiry I actually pursue.
 
-`source`, `entity`, `concept`, `thesis`, `synthesis`, `analysis`, `question` — each a
-different epistemic move; `thesis`/`analysis`/`question` are cheap and should be
-plentiful (a wiki that never argues and never asks is a filing cabinet). Status is just
-`seed` (placeholder, a commitment) or `live` (built, safe to build on); epistemic
-weight lives in `confidence`, including `contested` for live disagreements — which are
-information, never smoothed away.
+I set the purpose and priorities, brought the source material and recurring questions, and directed successive attempts. I asked agents to compare implementations, verify whether outside ideas added value, and preserve useful work while reconsidering the architecture. Agents contributed substantial research, design, code, documentation, and testing. The implementation reflects that collaboration.
 
----
+The latest reconstruction began with a concrete audit. Among the findings: changed source bytes could leave the checker’s exit status successful; an issued claim could be reassigned without a persistent identity record; advertised tests were missing. The reconstruction turned those gaps into executable checks and regression cases.
 
-## How to use it well
+It also reduced the mandatory page types from seven to five, added correction-impact tracing, made unfinished work visible, and supplied a factory for creating clean instances. A review caught a factory bug that could copy a personalized charter and log into a new project; the helper was changed to generate pristine versions, with a regression test for that failure.
 
-### First moves
+That development loop matters to me: give agents a substantive problem, let them contribute implementation judgment, inspect what they produce, and use failures to improve the reusable system. The [prior audit](docs/PRIOR_AUDIT.md), [change record](CHANGELOG.md), and [validation report](docs/VALIDATION.md) make this particular loop inspectable.
 
-1. **Drop 2-3 sources in `raw/`. Run `/charter`.** Answer its one question. This is
-   the highest-leverage minute you'll spend on the wiki.
-2. **Run `/ingest`.** Read what changed — not just the new source page; look at the
-   concept pages it touched.
-3. **If a page is wrong, fix upstream**: better source, sharper charter, re-ingest.
-   Hand-editing is fine too (it's just markdown) — bump `updated:`, run `/lint`.
-4. **Repeat. Watch domains emerge from content**, not intent.
-5. **At ~5 sources on one theme, ask for a synthesis.** Early synthesis forces the
-   through-line question: is there a there there?
+## Where I use the approach
 
-### Patterns that pay off
+The template is shared machinery. Each instance needs its own purpose and standards of evidence.
 
-- **Interrogate it.** `/query` is not just retrieval — every real question either
-  proves the routing works or files the gap as a `question` page. A wiki that is only
-  written to, never asked, compounds nothing.
-- **Review on cadence** (~25 ingests, or after any batch phase). Review is where seeds
-  get developed or demoted, synthesis debt gets paid, and the State of the Model gets
-  rewritten. Skip it and the wiki silts up.
-- **Chase cross-domain links and theses.** The most valuable artifacts are a thesis in
-  one domain resting on evidence in another. If months of ingests produce zero thesis
-  pages, say so to the agent — that's a compilation failure, not a style choice.
-- **Batch with state.** For big corpora, let the agent maintain `wiki/_state.md`
-  (queue, waves, resume point) and gate each wave with lint. Order sources
-  foundational-first so later ones integrate instead of duplicating.
-- **Read the State of the Model occasionally.** It's the wiki's compiled binary. If it
-  reads stale or wrong, that's the first thing to fix — everything routes from it.
+**Personal archive compilation.** I use an Astra-derived instance to work with selected conversations and notes: recover questions, trace changes in thinking, and prepare context for future collaboration. Speaker, date, reading coverage, and the difference between my words and an agent’s interpretation matter here. A past conversation can inform a present inquiry without becoming a permanent verdict about me.
 
-### Antipatterns
+**Working with AI.** Another Astra-derived instance compiles practitioner material into a library of methods, explanations, and adaptable starting prompts. It keeps an author’s report, a proposed adaptation, a local test, and evidence of my own learning distinct. The library serves both me and agents helping with later work; it also supports separate practice sessions.
 
-- **Topic-label theses.** "Things about X" is not a claim.
-- **Source-page essays.** A long summary whose Model Delta says "no material change"
-  is effort spent on the wrong layer. The ledger should be short; the owners rich.
-- **Trusting `live` + high importance without lint.** The script exists because
-  self-reported maturity drifts.
-- **Letting the log or index grow unboundedly.** Rotation and catalog extraction are
-  in the contract; if first reads feel long, demand them.
-- **Mixing modes in one turn.** Ingest, review, refactor are different cognitive
-  operations; one per turn.
+**Health education research.** An Astra-derived compiler reconstructs arguments from selected source material and supports targeted evidence appraisal. The key separation is between explaining an author faithfully, checking an empirical claim, and deciding what could support an original educational piece. This is ongoing research and preparation.
 
----
+**Contemplative and philosophical wikis.** Earlier instances in the same compiler lineage organize teachings, arguments, and practice instructions. These require attention to the source’s conceptual framework and to differences between interpretation, instruction, and reported experience. They helped establish the broader range of work I wanted the reusable template to serve.
 
-## When this approach is wrong
+These are uses across my own projects. The public demonstration uses fictional records so the method can be examined without exposing private conversations or reproducing those source collections.
 
-The system pays off when the same domain gets revisited, accumulates evidence over
-months, and benefits from being interrogable later. If that's not your situation,
-don't use it. Specifically wrong for: tiny knowledge bases (<10 sources), real-time or
-volatile data, code documentation, highly structured records, single-shot
-summarization. If unsure, try five sources and decide; bailing costs one `rm -rf wiki/`.
+## Try it
 
----
+Use **Python 3.10+** and an agent that can read and edit local files. From this template’s root, create a new instance at a destination that does not already exist:
 
-## Files
+```sh
+python tools/new_instance.py ../my-knowledge
+```
 
-| Path | Purpose |
-|---|---|
-| `AGENTS.md` | Canonical agent contract. The spec. |
-| `CLAUDE.md` | Thin adapter pointing Claude Code at `AGENTS.md`. |
-| `README.md` | This file. |
-| `wiki/index.md` | Charter + State of the Model + router. First read, every session. |
-| `wiki/log.md` | Append-only event log, newest first, rotated at review. |
-| `wiki/_operations.md` | Extended playbooks: charter, ingest, batch, query, review, refactor, scaling. |
-| `wiki/_templates.md` | Per-type page scaffolds. |
-| `wiki/_state.md` | Batch ingestion state (created when needed). |
-| `wiki/_catalog.md` | Exhaustive page register (created past ~150 pages). |
-| `tools/lint.py` | Mechanical invariant checker + diagnostics. Stdlib only. |
-| `raw/` | Your sources. Immutable. |
-| `raw/assets/` | Images, PDFs, attachments. |
-| `.claude/commands/` | Slash commands for Claude Code (optional convenience). |
+The factory copies the operating files and creates a fresh index and log. It refuses an existing destination or a populated source template.
 
-System files inside `wiki/` are prefixed `_` and excluded from the index and lint
-counts. The wiki itself stays flat — content pages are siblings.
+Add one or two source snapshots to the new instance’s `raw/` directory. Keep original PDFs and images alongside extracted text where relevant. Open the instance with your agent and ask:
 
----
+> Read AGENTS.md. This project is for [purpose]. I expect to revisit [questions]. Read these sources, preserve what they actually say, and build only the pages that help with those questions. Answer [a real question]. Tell me what changed in our understanding and what remains unresolved.
 
-## Working with the agent
+Run `python tools/kc.py check` from the instance root. After reviewing new source claims, the write workflow is **check → seal → check**: inspect the work, add its integrity records, and verify the resulting state.
 
-**Modes** (slash commands in Claude Code; plain verbs with any agent):
-`charter`, `ingest`, `query`, `synthesize`, `lint`, `review`, `refactor`.
-One mode per turn. English works too — the modes are the API; English is the wrapper.
+The [agent contract](AGENTS.md), [workflows](docs/WORKFLOWS.md), and [schema](docs/SCHEMA.md) carry the operating detail. Existing instances should consult the [migration guide](docs/MIGRATION.md).
 
-**In a session**, the agent reads the index (charter, model, routing) and the newest
-~10 log entries, then routes. It does not read the wiki linearly, and its first-read
-budget stays fixed no matter how large the wiki grows.
+## What the evidence supports
 
-**Multi-agent compatibility:** any agent following `AGENTS.md`/`CLAUDE.md` conventions
-operates this wiki identically. Switch between Claude Code, Codex, and Cursor freely;
-the contract does not assume Claude.
+The September development record reports **55 software tests passed and three Windows symlink tests skipped**. The Lumen example demonstrates a completed source correction, and a separate staged interruption exercises recovery in a fresh agent session. The [validation report](docs/VALIDATION.md) records the exact conditions and limitations.
 
-**Editing by hand:** it's markdown. Keep frontmatter intact, bump `updated:`, run
-`/lint` after deletes or renames. Open the repo in [Obsidian](https://obsidian.md) for
-graph view and backlinks — no dependency, any editor works.
+The small development comparison also produced correct substantive answers from the earlier template and from raw sources plus search. It established no general advantage in answer quality or total cost. The checker verifies structure and recorded integrity; evidence quality and interpretation still require judgment.
 
-**Version control:** the repo is a git repo. Committing after sessions gives you
-time-travel over the model's evolution and makes refactors fearless. Recommended, not
-required.
+This template is intended for modest, repeatedly revisited collections with one writer at a time. Compilation earns its upkeep when retained explanations, questions, and corrections help later work. For a one-off question, direct source reading may be all you need.
 
----
-
-## Suggested cadence
-
-- **Per ingest:** drop source, `/ingest`, glance at the touched owner pages.
-- **Per batch wave (5-10 sources):** agent updates hubs, runs lint, one log entry.
-- **Every ~25 ingests or after each batch phase:** `/review` — diagnostics disposed,
-  synthesis debt paid, State of the Model rewritten.
-- **Anytime:** `/query`. It's the point of the whole thing, and it stress-tests
-  routing for free.
-- **Before sharing or archiving:** `/lint`.
-
----
-
-## License
-
-The template is a starting point. The wiki you build on it is yours.
+**The unresolved test is whether maintaining that understanding returns more value than it costs.** The repository gives you a concrete system with which to make that comparison.
